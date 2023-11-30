@@ -54,6 +54,7 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px; */
             }
+
             table {
                 background-color: #fff;
                 border-collapse: collapse;
@@ -123,7 +124,17 @@
     </head>
     <body>
         <div class="app-container">
-            <!-- HTML Form --> 
+
+            <div class="input-pane" id="admin-panel">
+                <!-- H1 -->
+                <h1>Dev setup panel</h1>
+                <p>Manualy select the rule in the UI for testing / demo purposes</p>
+                <label for="rule">Rule:</label>
+                <select id="rule" name="rule">
+                    <!-- <option value="Increase by 1">Increase by 1</option> -->
+                </select>
+            </div>
+
             <div class="input-pane">
                 <form id="dataForm">
                     <label for="number1">Number 1:</label>
@@ -155,23 +166,25 @@
                         required
                     /><br /><br />
                     <!-- checkbox input for if it confirms rule or not -->
-                    <label for="confirm">Confirm Rule:</label>
+                    <!-- <label for="confirm">Confirm Rule:</label>
                     <input
                         type="checkbox"
                         id="confirm"
                         name="confirm"
                         value="confirm"
-                    /><br /><br /> 
+                    /><br /><br />  -->
 
 
                     <input type="submit" value="Submit" />
-                    <button id="showRuleBtn" type="button">Show Rule</button>
+                    <!-- <button id="showRuleBtn" type="button">Show Rule</button> -->
                 </form>
 
                 <br /><br /><br />
 
 
                 <form id="ruleForm">
+                    <p>Think you figured out the rule? Guess it here!</p>
+
                     <label for="number1">Rule:</label>
                     <input
                         type="text"
@@ -182,10 +195,7 @@
                     <input type="submit" value="Guess Rule" />
                 </form>
 
-                
-
-
-
+            
             </div>
 
             <!-- Div to display the API response -->
@@ -197,18 +207,79 @@
                     <th>Entry #</th>
                     <th>Instance</th>
                     <th>Reason</th>
-                    <th>Confirms Rule</th>
+                    <th>Matches Rule</th>
                 </tr>
             </table>
         </div>
 
         <script>
+            
+            // functions to confirm if sequences of 3 numbers follow a rule
+
+            function isIncreasingByOne(num1, num2, num3) {
+                return num2 - num1 == num3 - num2;
+            }
+            function isDecreasingByOne(num1, num2, num3) {
+                return num1 - num2 == num2 - num3;
+            }
+            function isIncreasingByTwo(num1, num2, num3) {
+                return num2 - num1 == num3 - num2 && num2 - num1 == 2;
+            }
+            function isDecreasingByTwo(num1, num2, num3) {
+                return num1 - num2 == num2 - num3 && num1 - num2 == 2;
+            }
+            //if a fibonacci sequence
+            function isFibonacci(num1, num2, num3) {
+                return num1 + num2 == num3;
+            }
+            // is increasing 
+            function isIncreasing(num1, num2, num3) {
+                return num2 > num1 && num3 > num2;
+            }
+            // is decreasing
+            function isDecreasing(num1, num2, num3) {
+                return num2 < num1 && num3 < num2;
+            }
+            function areAllNumbersPositive(num1, num2, num3) {
+                return num1 > 0 && num2 > 0 && num3 > 0;
+            }
+            function areAllNumbersNegative(num1, num2, num3) {
+                return num1 < 0 && num2 < 0 && num3 < 0;
+            }
+            function any3Numbers(num1, num2, num3) {
+                return true;
+            }
+
+
+
+            // dictionary matching rule names to functions
+            var ruleDict = {
+                "Increase by 1": isIncreasingByOne,
+                "Decrease by 1": isDecreasingByOne,
+                "Increase by 2": isIncreasingByTwo,
+                "Decrease by 2": isDecreasingByTwo,
+                "Fibonacci": isFibonacci,
+                "Increasing order": isIncreasing,
+                "Decreasing order": isDecreasing,
+                "All positive": areAllNumbersPositive,
+                "All negative": areAllNumbersNegative,
+                "Any 3 numbers (feels too hard lol)": any3Numbers
+            };
+
+            // Populate rule dropdown
+            var ruleDropdown = document.getElementById("rule");
+            for (var key in ruleDict) {
+                var option = document.createElement("option");
+                option.text = key;
+                ruleDropdown.add(option);
+            }
+
+
+
             // App States
             let entryCount = 0;
         
-
             // Get input parameters from URL (hardcode for now)
-            let correctRule = "Increase by 1";
 
 
             // Handle Form Submission and Update Table
@@ -238,8 +309,13 @@
                     cell2.innerHTML = number1 + ", " + number2 + ", " + number3;
                     // Reason
                     cell3.innerHTML = reason;
-                    // Confirms Rule
-                    cell4.innerHTML = document.getElementById("confirm").checked;
+                    
+                    // Get correct rule from admin panel
+                    var correctRule = document.getElementById("rule").value;
+
+                    // Check if the numbers follow the rule
+                    var isCorrect = ruleDict[correctRule](number1, number2, number3);
+                    cell4.innerHTML = isCorrect;
 
                     // Clearing the form for next entry
                     document.getElementById("dataForm").reset();
@@ -257,17 +333,16 @@
                     var table = document.getElementById("dataTable");
                     addSingleRowToChart('Rule: ' + ruleGuess);
 
-
                     // Clearing the form for next entry
                     document.getElementById("ruleForm").reset();
                 });
 
-            document.getElementById("showRuleBtn").addEventListener("click", function(event){
-                event.preventDefault();
-                addSingleRowToChart('Correct Rule: ' + correctRule, "#e8f5e9");
+            // document.getElementById("showRuleBtn").addEventListener("click", function(event){
+            //     event.preventDefault();
+            //     addSingleRowToChart('Correct Rule: ' + correctRule, "#e8f5e9");
 
-                // End activity after correct rule showed
-            });
+            //     // End activity after correct rule showed
+            // });
                 
 
             function addSingleRowToChart(inputString, color){
@@ -285,7 +360,6 @@
                 if (color) {
                     newCell.style.backgroundColor = color;
                 }
-
                 // cell color light green
                 // newCell.style.backgroundColor = "#e8f5e9";
             }
@@ -298,11 +372,11 @@
             // addSingleRowToChart('Rule: ' + correctRule);
 
             // Test: set default text/values for all fields
-            document.getElementById("number1").value = 1;
-            document.getElementById("number2").value = 2;
-            document.getElementById("number3").value = 3;
-            document.getElementById("reason").value = "Increase by 1";
-            document.getElementById("ruleGuess").value = "Increase by 1";
+            // document.getElementById("number1").value = 1;
+            // document.getElementById("number2").value = 2;
+            // document.getElementById("number3").value = 3;
+            // document.getElementById("reason").value = "Increase by 1";
+            // document.getElementById("ruleGuess").value = "Increase by 1";
 
 
 
