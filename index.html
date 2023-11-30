@@ -1,7 +1,18 @@
+<!-- 
+    Confirmation Bias Activity
+
+    This activity is emulate Peter Wason's confirmation bias experiment.
+    The user is presented with three numbers that follow a certain rule, which they have to eventually determine.
+    The user must then enter three numbers that they think follow the same rule.
+    The user's entries are displayed in a table, along with the reason they think the numbers follow the rule.
+    The point is for users to realize that they are biased towards confirming their own hypothesis, and that they should try to disprove it instead.
+
+
+ -->
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Form Submission Example</title>
+        <title>Confirmation Bias</title>
         <style>
             /* Simple CSS for styling */
             /* form, table {
@@ -26,12 +37,22 @@
                 height: 100vh;
                 margin: 0;
             }
-            form {
+
+            .input-pane {
                 background-color: #fff;
                 padding: 20px;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
+            }
+
+
+            form {
+                /* background-color: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px; */
             }
             table {
                 background-color: #fff;
@@ -102,39 +123,55 @@
     </head>
     <body>
         <div class="app-container">
-            <!-- HTML Form -->
-            <form id="dataForm">
-                <label for="number1">Number 1:</label>
-                <input
-                    type="number"
-                    id="number1"
-                    name="number1"
-                    required
-                /><br /><br />
-                <label for="number2">Number 2:</label>
-                <input
-                    type="number"
-                    id="number2"
-                    name="number2"
-                    required
-                /><br /><br />
-                <label for="number3">Number 3:</label>
-                <input
-                    type="number"
-                    id="number3"
-                    name="number3"
-                    required
-                /><br /><br />
-                <label for="reason">Reason:</label>
-                <input
-                    type="text"
-                    id="reason"
-                    name="reason"
-                    required
-                /><br /><br />
-                <input type="submit" value="Submit" />
-                <button id="showRuleBtn" type="button">Show Rule</button>
-            </form>
+            <!-- HTML Form --> 
+            <div class="input-pane">
+                <form id="dataForm">
+                    <label for="number1">Number 1:</label>
+                    <input
+                        type="number"
+                        id="number1"
+                        name="number1"
+                        required
+                    /><br /><br />
+                    <label for="number2">Number 2:</label>
+                    <input
+                        type="number"
+                        id="number2"
+                        name="number2"
+                        required
+                    /><br /><br />
+                    <label for="number3">Number 3:</label>
+                    <input
+                        type="number"
+                        id="number3"
+                        name="number3"
+                        required
+                    /><br /><br />
+                    <label for="reason">Reason:</label>
+                    <input
+                        type="text"
+                        id="reason"
+                        name="reason"
+                        required
+                    /><br /><br />
+                    <input type="submit" value="Submit" />
+                    <button id="showRuleBtn" type="button">Show Rule</button>
+                </form>
+                <br />
+                <form id="ruleForm">
+                    <label for="number1">Rule:</label>
+                    <input
+                        type="text"
+                        id="ruleGuess"
+                        name="ruleGuess"
+                        required
+                    /><br /><br />
+                    <input type="submit" value="Guess Rule" />
+                </form>
+
+
+
+            </div>
 
             <!-- Div to display the API response -->
             <!-- <div id="apiResponse"></div> -->
@@ -150,11 +187,12 @@
         </div>
 
         <script>
+            // App States
+            let entryCount = 0;
+        
 
             // Get input parameters from URL (hardcode for now)
-            
-
-
+            let correctRule = "Increase by 1";
 
 
             // Handle Form Submission and Update Table
@@ -177,7 +215,8 @@
                     var cell3 = newRow.insertCell(2);
 
                     // Entry count
-                    cell1.innerHTML = table.rows.length - 1;
+                    entryCount++;
+                    cell1.innerHTML = entryCount;
                     // Instance data
                     cell2.innerHTML = number1 + ", " + number2 + ", " + number3;
                     // Reason
@@ -186,6 +225,52 @@
                     // Clearing the form for next entry
                     document.getElementById("dataForm").reset();
                 });
+            // Handle rule guess submission
+            document
+                .getElementById("ruleForm")
+                .addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    // Getting form data
+                    let ruleGuess = document.getElementById("ruleGuess").value;
+
+                    // Adding a new row to the table
+                    var table = document.getElementById("dataTable");
+                    addSingleRowToChart('Rule: ' + ruleGuess);
+
+
+                    // Clearing the form for next entry
+                    document.getElementById("ruleForm").reset();
+                });
+                
+
+            function addSingleRowToChart(inputString){
+                // Adds a single row to the table that is not broken into cells 
+                var table = document.getElementById("dataTable");
+                var newRow = table.insertRow();
+                var newCell = newRow.insertCell(0);
+                newCell.colSpan = 3;
+                newCell.innerHTML = inputString;
+                newCell.style.textAlign = "center";
+            }
+
+
+            // Test table data
+            // addSingleRowToChart('Rule: ' + correctRule);
+            // addSingleRowToChart('Rule: ' + correctRule);
+            // addSingleRowToChart('Rule: ' + correctRule);
+            // addSingleRowToChart('Rule: ' + correctRule);
+
+            // Test: set default text/values for all fields
+            // document.getElementById("number1").value = 1;
+            // document.getElementById("number2").value = 2;
+            // document.getElementById("number3").value = 3;
+            // document.getElementById("reason").value = "Increase by 1";
+            // document.getElementById("ruleSubmission").value = "Increase by 1";
+
+
+
+
         </script>
     </body>
 </html>
