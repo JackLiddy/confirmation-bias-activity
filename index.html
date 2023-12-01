@@ -120,11 +120,65 @@
                 align-items: flex-start;
                 /* min-width: 300px; */
             }
+
+            .slider {
+                /* -webkit-appearance: none; */
+                width: 100%;
+                /* height: 25px; */
+                /* background: #d3d3d3; */
+                /* outline: none; */
+                /* opacity: 0.7; */
+                -webkit-transition: 0.2s;
+                /* transition: opacity 0.2s; */
+            }
+
+
+            /* The Modal (background) */
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Could be more or less, depending on screen size */
+            }
+
+            /* The Close Button */
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
         </style>
     </head>
     <body>
         <div class="app-container">
 
+
+            
             <div class="input-pane" id="admin-panel">
                 <!-- H1 -->
                 <h1>Dev setup panel</h1>
@@ -134,8 +188,9 @@
                     <!-- <option value="Increase by 1">Increase by 1</option> -->
                 </select>
             </div>
-
             <div class="input-pane">
+                <h1>User guessing panel</h1>
+
                 <form id="dataForm">
                     <label for="number1">Number 1:</label>
                     <input
@@ -158,7 +213,7 @@
                         name="number3"
                         required
                     /><br /><br />
-                    <label for="reason">Reason for choosing:</label>
+                    <label for="reason">Reason for choosing(Remove/Change?):</label>
                     <input
                         type="text"
                         id="reason"
@@ -192,6 +247,12 @@
                         name="ruleGuess"
                         required
                     /><br /><br />
+                    <!-- slider here -->
+                    <label for="myRange" id="confidence-label" >Confidence: 50%</label> 
+                    <!-- <input type="range" min="0" max="100" value="50" class="slider" id="myRange"> -->
+                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" oninput="updateSliderLabel()">
+                    <br /><br />                    
+
                     <input type="submit" value="Guess Rule" />
                 </form>
 
@@ -212,33 +273,61 @@
             </table>
         </div>
 
-        <script>
-            
-            // functions to confirm if sequences of 3 numbers follow a rule
+        <!-- Modal -->
+        <!-- <div id="ruleModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Some text in the Modal..</p>
+                <button id="closeModal">Okay</button>
+            </div>
+        </div> -->
 
-            function isIncreasingByOne(num1, num2, num3) {
-                return num2 - num1 == num3 - num2;
+
+
+        <script>
+
+
+            // Update confidence percentage on slider change
+            // var slider = document.getElementById("myRange");
+            // var output = document.getElementById("confidence-label");
+            // output.innerHTML = "Confidence: " + slider.value + "%";
+
+
+            function updateSliderLabel() {
+                var slider = document.getElementById("myRange");
+                var output = document.getElementById("confidence-label");
+                output.innerHTML = "Confidence: " + slider.value + "%";
             }
-            function isDecreasingByOne(num1, num2, num3) {
-                return num1 - num2 == num2 - num3;
+
+
+
+            // functions to confirm if sequences of 3 numbers follow a rule
+            function isIncreasingByOne(a, b, c) {
+               return b === a + 1 && c === b + 1;
             }
-            function isIncreasingByTwo(num1, num2, num3) {
-                return num2 - num1 == num3 - num2 && num2 - num1 == 2;
+            function isDecreasingByOne(a, b, c) {
+                return b === a - 1 && c === b - 1;
             }
-            function isDecreasingByTwo(num1, num2, num3) {
-                return num1 - num2 == num2 - num3 && num1 - num2 == 2;
+            function isIncreasingByTwo(a, b, c) {
+                console.log('checking if increasing by 2');
+                console.log('numbers(post type conversation): ' + a + ', ' + b + ', ' + c);
+
+                let isTrue = (b === a + 2 && c === b + 2);
+                console.log('is true: ' + isTrue);
+                return isTrue;
+                // return b === a + 2 && c === b + 2;
             }
-            //if a fibonacci sequence
-            function isFibonacci(num1, num2, num3) {
-                return num1 + num2 == num3;
+            function isDecreasingByTwo(a, b, c) {
+                return b === a - 2 && c === b - 2;
             }
-            // is increasing 
-            function isIncreasing(num1, num2, num3) {
-                return num2 > num1 && num3 > num2;
+            function isFibonacci(a, b, c) {
+                return a + b === c;
             }
-            // is decreasing
-            function isDecreasing(num1, num2, num3) {
-                return num2 < num1 && num3 < num2;
+            function isIncreasing(a, b, c) {
+                return b > a && c > b;
+            }
+            function isDecreasing(a, b, c) {
+                return b < a && c < b;
             }
             function areAllNumbersPositive(num1, num2, num3) {
                 return num1 > 0 && num2 > 0 && num3 > 0;
@@ -249,8 +338,16 @@
             function any3Numbers(num1, num2, num3) {
                 return true;
             }
-
-
+            function isPrime(num) {
+                for (var i = 2; i < num; i++) if (num % i === 0) return false;
+                return num > 1;
+            }
+            function areAllNumbersPrime(num1, num2, num3) {
+                return isPrime(num1) && isPrime(num2) && isPrime(num3);
+            }
+            function sqareOfPrevious(num1, num2, num3) {
+                return num1 * num1 === num2 && num2 * num2 === num3;
+            }
 
             // dictionary matching rule names to functions
             var ruleDict = {
@@ -263,7 +360,8 @@
                 "Decreasing order": isDecreasing,
                 "All positive": areAllNumbersPositive,
                 "All negative": areAllNumbersNegative,
-                "Any 3 numbers (feels too hard lol)": any3Numbers
+                "Any 3 numbers (feels too hard lol)": any3Numbers,
+                "All prime (also feels hard + dont use primes over 5 digits)": areAllNumbersPrime
             };
 
             // Populate rule dropdown
@@ -313,13 +411,24 @@
                     // Get correct rule from admin panel
                     var correctRule = document.getElementById("rule").value;
 
+                    console.log('numbers(pre type conversation): ' + number1 + ', ' + number2 + ', ' + number3);
+                    console.log('correct rule: ', correctRule);
+
                     // Check if the numbers follow the rule
-                    var isCorrect = ruleDict[correctRule](number1, number2, number3);
+                    // var isCorrect = ruleDict[correctRule](number1, number2, number3);
+
+                    // Check if the numbers follow the rule
+                    var isCorrect = ruleDict[correctRule](parseInt(number1), parseInt(number2), parseInt(number3));
+
+
                     cell4.innerHTML = isCorrect;
+
+                    console.log('is correct: ' + isCorrect);
 
                     // Clearing the form for next entry
                     document.getElementById("dataForm").reset();
                 });
+
             // Handle rule guess submission
             document
                 .getElementById("ruleForm")
@@ -331,12 +440,24 @@
 
                     // Adding a new row to the table
                     var table = document.getElementById("dataTable");
-                    addSingleRowToChart('Rule: ' + ruleGuess);
+                    // path if we want to allow user to keep guessing?
+                    // addSingleRowToChart('Rule: ' + ruleGuess);
+
+                    // Get correct rule from admin panel
+                    var correctRule = document.getElementById("rule").value;
+                    
+                    // Open modal
+                    // Get the m
+                    openModal();
+
 
                     // Clearing the form for next entry
                     document.getElementById("ruleForm").reset();
                 });
 
+
+
+            // Remove?
             // document.getElementById("showRuleBtn").addEventListener("click", function(event){
             //     event.preventDefault();
             //     addSingleRowToChart('Correct Rule: ' + correctRule, "#e8f5e9");
@@ -378,6 +499,36 @@
             // document.getElementById("reason").value = "Increase by 1";
             // document.getElementById("ruleGuess").value = "Increase by 1";
 
+            // Get the modal
+            var modal = document.getElementById("ruleModal");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // Get the button that closes the modal
+            var closeButton = document.getElementById("closeModal");
+
+            // When the user clicks the button, open the modal 
+            function openModal() {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks on "Okay", close the modal
+            closeButton.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
 
 
 
