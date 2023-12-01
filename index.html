@@ -7,7 +7,13 @@
     The user's entries are displayed in a table, along with the reason they think the numbers follow the rule.
     The point is for users to realize that they are biased towards confirming their own hypothesis, and that they should try to disprove it instead.
 
+    The activity is broken into two parts: the admin panel and the user panel.
+    The admin panel is used to set the rule that the user must guess.
+    The user panel is used to enter their guesses and reasons for why they think the numbers follow the rule.
+    The user panel also displays the entries in a table, and allows the user to guess the rule.
+    The user can also view the correct rule from the admin panel.
 
+    
  -->
 <!DOCTYPE html>
 <html>
@@ -143,14 +149,12 @@
                 width: 100%; 
                 height: 100%; /* Full height */
                 overflow: auto; /* Enable scroll if needed */
-
             }
 
             /* Modal Content */
             .modal-content {
                 background-color: #fefefe;
                 margin: 15% auto; /* 15% from the top and centered */
-
                 padding: 20px;
                 border: 1px solid #888;
                 width: 30%; /* Could be more or less, depending on screen size */
@@ -171,14 +175,11 @@
                 cursor: pointer;
             }
 
-
         </style>
     </head>
     <body>
         <div class="app-container">
 
-
-            
             <div class="input-pane" id="admin-panel">
                 <!-- H1 -->
                 <h1>Dev setup panel</h1>
@@ -289,8 +290,6 @@
                 <button id="closeModal">Okay</button>
             </div>
         </div>
-
-
 
         <script>
 
@@ -459,9 +458,6 @@
                     console.log('confidence: ' + confidence);
 
 
-                    
-                    // Open modal
-                    // Get the m
                     openModal(ruleGuess, confidence);
 
 
@@ -471,8 +467,6 @@
                     updateSliderLabel();
                 });
 
-
-
             // Remove?
             // document.getElementById("showRuleBtn").addEventListener("click", function(event){
             //     event.preventDefault();
@@ -480,7 +474,6 @@
 
             //     // End activity after correct rule showed
             // });
-                
 
             function addSingleRowToChart(inputString, color){
                 // Adds a single row to the table that is not broken into cells 
@@ -557,8 +550,6 @@
                     modal.style.display = "none";
                 }
             }
-
-
 
         </script>
     </body>
