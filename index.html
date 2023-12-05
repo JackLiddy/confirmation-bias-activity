@@ -43,12 +43,15 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                text-align: center;
+
 
                 background-color: #fff;
                 padding: 20px;
                 border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
                 margin-bottom: 20px;
+                box-shadow: 4px 4px 3px 0px #6d39a8;
             }
 
             #dataForm {
@@ -143,9 +146,9 @@
                 height: 15px;
                 background: #d3d3d3;
                 outline: none;
-                /* opacity: 0.7; */
-                -webkit-transition: 0.2s;
-                transition: opacity 0.2s;
+                opacity: 0.9;
+                -webkit-transition: 0.3s;
+                transition: opacity 0.3s;
             }
 
             .slider::-webkit-slider-thumb {
@@ -165,6 +168,10 @@
                 background: url("assets/anon-raven-icon.png.png");
                 cursor: pointer;
             }
+            .slider:hover {
+                opacity: 1;
+            }
+
 
 
 
@@ -172,6 +179,17 @@
                 display: flex;
                 flex-direction: row;
             }
+
+
+            .confidence-and-submit-container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                gap: 10px;
+            }
+
 
             /* final guess button disbaled until 3 entries */
             #finalGuessButton {
@@ -234,7 +252,7 @@
                             maxlength="4"
                             pattern="\d*"
                             inputmode="numeric"
-                            max="999"
+                            max="9999"
                         />
                         <span>,</span>
                         <input
@@ -243,7 +261,7 @@
                             maxlength="4"
                             pattern="\d*"
                             inputmode="numeric"
-                            max="999"
+                            max="9999"
                         />
                         <span>,</span>
                         <input
@@ -252,7 +270,7 @@
                             maxlength="4"
                             pattern="\d*"
                             inputmode="numeric"
-                            max="999"
+                            max="9999"
                         />
                     </div>
 
@@ -267,21 +285,27 @@
                         required
                     /><br /><br />
 
+                    <p>Drag Rigorous Raven to show your confidence in your guess</p>
+
                     <label for="myRange" id="confidence-label"
                         >Confidence: 50%</label
                     >
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value="50"
-                        class="slider"
-                        id="myRange"
-                        oninput="updateSliderLabel()"
-                    />
+                    
+                    <div class="confidence-and-submit-container">
 
-                    <input type="submit" value="Submit Your Guess" /> 
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value="50"
+                            class="slider"
+                            id="myRange"
+                            oninput="updateSliderLabel()"
+                        />
 
+                        <input type="submit" value="Submit Your Guess" /> 
+                    
+                    </div>
 
                     <button
                         id="finalGuessButton"
