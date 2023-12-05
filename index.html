@@ -20,23 +20,10 @@
     <head>
         <title>Confirmation Bias</title>
         <style>
-            /* Simple CSS for styling */
-            /* form, table {
-            margin: 20px;
-            padding: 10px;
-        }
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            text-align: left;
-        } */
 
             body {
                 font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
+                background-color: #121212;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -44,12 +31,30 @@
                 margin: 0;
             }
 
+            .app-container {
+                /* width: 500px; */
+                display: flex;
+                align-items: flex-start;
+                /* min-width: 300px; */
+                gap: 20px;
+            }
+
             .input-pane {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
                 background-color: #fff;
                 padding: 20px;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
+            }
+
+            #dataForm {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             form {
@@ -84,6 +89,8 @@
                 border: 1px solid #ddd;
                 border-radius: 5px;
                 /* width: calc(100% - 22px); */
+                width: 80%;
+
             }
             input[type="submit"] {
                 background-color: #4caf50;
@@ -117,13 +124,6 @@
             }
             button:hover {
                 background-color: #45a049;
-            }
-
-            .app-container {
-                /* width: 500px; */
-                display: flex;
-                align-items: flex-start;
-                /* min-width: 300px; */
             }
 
             .slider {
@@ -166,10 +166,7 @@
                 cursor: pointer;
             }
 
-            #dataForm {
-                display: flex;
-                flex-direction: column;
-            }
+
 
             .num-entry-row {
                 display: flex;
@@ -187,6 +184,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+
             }
 
             #seriesEntryForm input[type="number"] {
@@ -222,7 +220,7 @@
                 </select>
             </div>
             <div class="input-pane">
-                <h1>User guessing panel</h1>
+                <h1>Activity 1.1 Confirmation Bias</h1>
 
                 <form id="dataForm">
                     <p>
@@ -258,7 +256,10 @@
                         />
                     </div>
 
-                    <label for="rule">Rule:</label>
+                    <!-- <label for="rule">Rule:</label> -->
+
+                    <p>Type the rule you are testing with your above guess</p>
+
                     <input
                         type="text"
                         id="rule"
@@ -279,7 +280,9 @@
                         oninput="updateSliderLabel()"
                     />
 
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="Submit Your Guess" /> 
+
+
                     <button
                         id="finalGuessButton"
                         type="button"
@@ -629,6 +632,7 @@ Please respond with only “true” or “false”.`;
                                 data.choices[0].message.content.trim();
                             // document.getElementById('apiResponse').innerText = apiResponse;
                             console.log("apiResponse: ", apiResponse);
+                            alert(apiResponse);
                         })
                         .catch((error) => console.error("Error:", error));
                 } catch (error) {
