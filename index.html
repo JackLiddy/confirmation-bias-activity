@@ -84,7 +84,7 @@
                 margin: 5px 0;
                 border: 1px solid #ddd;
                 border-radius: 5px;
-                width: calc(100% - 22px);
+                /* width: calc(100% - 22px); */
             }
             input[type="submit"] {
                 background-color: #4caf50;
@@ -175,6 +175,16 @@
                 cursor: pointer;
             }
 
+            #dataForm {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .num-entry-row {
+                display: flex;
+                flex-direction: row;
+            }
+
         </style>
     </head>
     <body>
@@ -190,9 +200,9 @@
                 </select>
             </div>
             <div class="input-pane">
-                <h1>User guessing panel</h1>
+                <!-- <h1>User guessing panel</h1> -->
 
-                <form id="dataForm">
+                <!-- <form id="dataForm">
                     <label for="number1">Number 1:</label>
                     <input
                         type="number"
@@ -214,13 +224,15 @@
                         name="number3"
                         required
                     /><br /><br />
-                    <label for="reason">Reason for choosing(Remove/Change?):</label>
+                    <label for="reason">Rule:</label>
                     <input
                         type="text"
                         id="reason"
                         name="reason"
                         required
                     /><br /><br />
+
+                    -->
                     <!-- checkbox input for if it confirms rule or not -->
                     <!-- <label for="confirm">Confirm Rule:</label>
                     <input
@@ -230,18 +242,87 @@
                         value="confirm"
                     /><br /><br />  -->
 
+                    <!--  <input type="submit" value="Submit" /> -->
+                    <!-- <button id="showRuleBtn" type="button">Show Rule</button> --> <!--
+                </form>
+
+                <br /><br /><br /> -->
+
+                <!-- reformat the above form such that each number entry box is on the same horizontal line -->
+                
+                <h1>User guessing panel</h1>
+
+                <form id="dataForm">
+
+                    <div class="num-entry-row">
+
+
+                        <div class="input-col">
+                            <label for="number1">Number 1:</label>
+                            <input
+                                type="number"
+                                id="number1"
+                                name="number1"
+                                maxlength="5"
+                                required
+                            />
+                        </div>
+
+                        <div class="input-col">
+                            <label for="number2">Number 2:</label>
+                            <input
+                                type="number"
+                                id="number2"
+                                name="number2"
+                                required
+                            />
+                        </div>
+
+                        <div class="input-col">
+                            <label for="number3">Number 3:</label>
+                            <input
+                                type="number"
+                                id="number3"
+                                name="number3"
+                                required
+                            />
+                        </div>
+
+                        
+
+                    </div>
+
+
+                    <label for="reason">Rule:</label>
+                    <input
+                        type="text"
+                        id="reason"
+                        name="reason"
+                        required
+                    /><br /><br />
+
+
+                    <label for="myRange" id="confidence-label" >Confidence: 50%</label> 
+                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" oninput="updateSliderLabel()">
+
+
+                    <!-- checkbox input for if it confirms rule or not -->
+                    <!-- <label for="confirm">Confirm Rule:</label>
+                    <input
+                        type="checkbox"
+                        id="confirm"
+                        name="confirm"
+                        value="confirm"
+                    /><br /><br />  -->
 
                     <input type="submit" value="Submit" />
                     <!-- <button id="showRuleBtn" type="button">Show Rule</button> -->
                 </form>
 
-                <br /><br /><br />
-
-
                 <form id="ruleForm">
                     <p>Think you figured out the rule? Guess it here!</p>
 
-                    <label for="ruleGuess">Rule:</label>
+                    <label for="ruleGuess">Final Guess of rule:</label>
                     <input
                         type="text"
                         id="ruleGuess"
@@ -249,9 +330,8 @@
                         required
                     /><br /><br />
                     <!-- slider here -->
-                    <label for="myRange" id="confidence-label" >Confidence: 50%</label> 
-                    <!-- <input type="range" min="0" max="100" value="50" class="slider" id="myRange"> -->
-                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" oninput="updateSliderLabel()">
+                    <!-- <label for="myRange" id="confidence-label" >Confidence: 50%</label> 
+                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" oninput="updateSliderLabel()"> -->
                     <br /><br />                    
 
                     <input type="submit" value="Guess Rule" />
@@ -268,7 +348,7 @@
                 <tr id="tableBody">
                     <th>Entry #</th>
                     <th>Instance</th>
-                    <th>Reason</th>
+                    <th>Rule</th>
                     <th>Matches Rule</th>
                 </tr>
             </table>
@@ -454,8 +534,11 @@
                     var correctRule = document.getElementById("rule").value;
 
                     //get confidence value from slider
-                    var confidence = document.getElementById("myRange").value;
-                    console.log('confidence: ' + confidence);
+                    // var confidence = document.getElementById("myRange").value;
+                    // console.log('confidence: ' + confidence);
+                    // Placeholder since likely moving value
+                    var confidence = 10;
+
 
 
                     openModal(ruleGuess, confidence);
