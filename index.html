@@ -208,12 +208,17 @@
                 -webkit-appearance: none;
                 margin: 0;
             }
+
+            #admin-panel {
+                /* margin-right: 20px; */
+                display: none;
+            }
+
         </style>
     </head>
     <body>
         <div class="app-container">
             <div class="input-pane" id="admin-panel">
-                <!-- H1 -->
                 <h1>Dev setup panel</h1>
                 <p>
                     Manualy select the rule in the UI for testing / demo
@@ -438,7 +443,7 @@
                         document.getElementById("number3").focus();
                     }
                 });
-                
+
             document
                 .getElementById("number2")
                 .addEventListener("keydown", function (e) {
@@ -544,45 +549,6 @@
                     }
                 });
 
-            // Handle rule guess submission
-            // To be utilized later
-            /*
-            document
-                .getElementById("ruleForm")
-                .addEventListener("submit", function (event) {
-                    event.preventDefault();
-
-                    // Getting form data
-                    let ruleGuess = document.getElementById("ruleGuess").value;
-
-                    // Adding a new row to the table
-                    var table = document.getElementById("dataTable");
-                    // path if we want to allow user to keep guessing?
-                    // addSingleRowToChart('Rule: ' + ruleGuess);
-
-                    // Get correct rule from admin panel
-                    var correctRule = document.getElementById("rule").value;
-
-                    //get confidence value from slider
-                    // var confidence = document.getElementById("myRange").value;
-                    // console.log('confidence: ' + confidence);
-                    // Placeholder since likely moving value
-                    var confidence = 10;
-                    openModal(ruleGuess, confidence);
-                    // Clearing the form for next entry
-                    document.getElementById("ruleForm").reset();
-
-                    updateSliderLabel();
-                });
-            */
-
-            // Remove?
-            // document.getElementById("showRuleBtn").addEventListener("click", function(event){
-            //     event.preventDefault();
-            //     addSingleRowToChart('Correct Rule: ' + correctRule, "#e8f5e9");
-
-            //     // End activity after correct rule showed
-            // });
 
             function addSingleRowToChart(inputString, color) {
                 // Adds a single row to the table that is not broken into cells
@@ -602,12 +568,6 @@
                 // cell color light green
                 // newCell.style.backgroundColor = "#e8f5e9";
             }
-
-            // Test table data
-            // addSingleRowToChart('Rule: ' + correctRule);
-            // addSingleRowToChart('Rule: ' + correctRule);
-            // addSingleRowToChart('Rule: ' + correctRule);
-            // addSingleRowToChart('Rule: ' + correctRule);
 
             // Test: set default text/values for all fields
             // document.getElementById("number1").value = 1;
