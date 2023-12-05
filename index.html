@@ -293,11 +293,11 @@
                     </div>
 
 
-                    <label for="reason">Rule:</label>
+                    <label for="rule">Rule:</label>
                     <input
                         type="text"
-                        id="reason"
-                        name="reason"
+                        id="rule"
+                        name="rule"
                         required
                     /><br /><br />
 
@@ -319,9 +319,8 @@
                     <!-- <button id="showRuleBtn" type="button">Show Rule</button> -->
                 </form>
 
+                <!-- 
                 <form id="ruleForm">
-                    <p>Think you figured out the rule? Guess it here!</p>
-
                     <label for="ruleGuess">Final Guess of rule:</label>
                     <input
                         type="text"
@@ -329,14 +328,10 @@
                         name="ruleGuess"
                         required
                     /><br /><br />
-                    <!-- slider here -->
-                    <!-- <label for="myRange" id="confidence-label" >Confidence: 50%</label> 
-                    <input type="range" min="0" max="100" value="50" class="slider" id="myRange" oninput="updateSliderLabel()"> -->
                     <br /><br />                    
-
                     <input type="submit" value="Guess Rule" />
                 </form>
-
+                -->
             
             </div>
 
@@ -355,10 +350,10 @@
         </div>
 
         <!-- Modal -->
+        <!-- 
         <div id="ruleModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-              
                 <h2>Your Guess: <span id="ruleGuessLabel"></span></h2>
                 <br />
                 <h2>Confidence: <span id="confidence-label-modal"></span></h2>
@@ -366,26 +361,20 @@
                 <h2>Correct Rule: <span id="correctRule"></span></h2>
 
                 <p id="modalText"> Some additional text here</p>
-
                 <button id="closeModal">Okay</button>
             </div>
         </div>
+        -->
 
         <script>
 
 
             // Update confidence percentage on slider change
-            // var slider = document.getElementById("myRange");
-            // var output = document.getElementById("confidence-label");
-            // output.innerHTML = "Confidence: " + slider.value + "%";
-
-
             function updateSliderLabel() {
                 var slider = document.getElementById("myRange");
                 var output = document.getElementById("confidence-label");
                 output.innerHTML = "Confidence: " + slider.value + "%";
             }
-
 
 
             // functions to confirm if sequences of 3 numbers follow a rule
@@ -463,60 +452,64 @@
 
             // App States
             let entryCount = 0;
-        
-            // Get input parameters from URL (hardcode for now)
 
+            // Data structue to contain submitted guesses
+            // Contains objects with the following properties: entryNumber, sequence, rule, matchesRule, confidence
+            let userEntries = [];
 
-            // Handle Form Submission and Update Table
+            
+            // Handle guess Submission and Update Table
             document
                 .getElementById("dataForm")
                 .addEventListener("submit", function (event) {
                     event.preventDefault();
 
-                    // Getting form data
-                    var number1 = document.getElementById("number1").value;
-                    var number2 = document.getElementById("number2").value;
-                    var number3 = document.getElementById("number3").value;
-                    var reason = document.getElementById("reason").value;
+                    // Retrieve form data
+                    let number1 = document.getElementById("number1").value;
+                    let number2 = document.getElementById("number2").value;
+                    let number3 = document.getElementById("number3").value;
+                    let rule = document.getElementById("rule").value;
+                    let confidence = document.getElementById("myRange").value;
+
+                    // Get correct rule from admin panel
+                    let correctRule = document.getElementById("rule").value;
+                    // Check if the numbers follow the rule
+                    let isCorrect = ruleDict[correctRule](parseInt(number1), parseInt(number2), parseInt(number3));
+
+                    // Add entry to userEntries array
+                    userEntries.push({
+                        entryNumber: entryCount,
+                        sequence: number1 + ", " + number2 + ", " + number3,
+                        rule: rule,
+                        matchesRule: isCorrect,
+                        confidence: confidence
+                    });
 
                     // Adding a new row to the table
-                    var table = document.getElementById("dataTable");
-                    var newRow = table.insertRow();
-                    var cell1 = newRow.insertCell(0);
-                    var cell2 = newRow.insertCell(1);
-                    var cell3 = newRow.insertCell(2);
-                    var cell4 = newRow.insertCell(3);
+                    let table = document.getElementById("dataTable");
+                    let newRow = table.insertRow();
+                    let cell1 = newRow.insertCell(0);
+                    let cell2 = newRow.insertCell(1);
+                    let cell3 = newRow.insertCell(2);
+                    let cell4 = newRow.insertCell(3);
 
-                    // Entry count
                     entryCount++;
+                
+                    // Display entry in table
                     cell1.innerHTML = entryCount;
-                    // Instance data
                     cell2.innerHTML = number1 + ", " + number2 + ", " + number3;
-                    // Reason
-                    cell3.innerHTML = reason;
-                    
-                    // Get correct rule from admin panel
-                    var correctRule = document.getElementById("rule").value;
-
-                    console.log('numbers(pre type conversation): ' + number1 + ', ' + number2 + ', ' + number3);
-                    console.log('correct rule: ', correctRule);
-
-                    // Check if the numbers follow the rule
-                    // var isCorrect = ruleDict[correctRule](number1, number2, number3);
-
-                    // Check if the numbers follow the rule
-                    var isCorrect = ruleDict[correctRule](parseInt(number1), parseInt(number2), parseInt(number3));
-
-
+                    cell3.innerHTML = rule;
                     cell4.innerHTML = isCorrect;
 
-                    console.log('is correct: ' + isCorrect);
+                    console.log('numbers(pre type conversation): ' + number1 + ', ' + number2 + ', ' + number3);
 
                     // Clearing the form for next entry
                     document.getElementById("dataForm").reset();
                 });
 
             // Handle rule guess submission
+            // To be utilized later
+            /*
             document
                 .getElementById("ruleForm")
                 .addEventListener("submit", function (event) {
@@ -538,17 +531,15 @@
                     // console.log('confidence: ' + confidence);
                     // Placeholder since likely moving value
                     var confidence = 10;
-
-
-
                     openModal(ruleGuess, confidence);
-
-
                     // Clearing the form for next entry
                     document.getElementById("ruleForm").reset();
 
                     updateSliderLabel();
                 });
+            */
+                
+
 
             // Remove?
             // document.getElementById("showRuleBtn").addEventListener("click", function(event){
@@ -588,10 +579,14 @@
             // document.getElementById("number1").value = 1;
             // document.getElementById("number2").value = 2;
             // document.getElementById("number3").value = 3;
-            // document.getElementById("reason").value = "Increase by 1";
+            // document.getElementById("rule").value = "Increase by 1";
             // document.getElementById("ruleGuess").value = "Increase by 1";
 
+
+
             // Get the modal
+            // Modal handlers
+            /* 
             var modal = document.getElementById("ruleModal");
 
             // Get the <span> element that closes the modal
@@ -633,6 +628,7 @@
                     modal.style.display = "none";
                 }
             }
+            */
 
         </script>
     </body>
