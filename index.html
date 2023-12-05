@@ -137,39 +137,32 @@
                 /* transition: opacity 0.2s; */
             }
 
-            /* The Modal (background) */
-            .modal {
-                display: none; /* Hidden by default */
-                position: fixed; /* Stay in place */
-                z-index: 1; /* Sit on top */
-                left: 0;
-                top: 0;
+            .slider {
+                -webkit-appearance: none;
                 width: 100%;
-                height: 100%; /* Full height */
-                overflow: auto; /* Enable scroll if needed */
+                height: 15px;
+                background: #d3d3d3;
+                outline: none;
+                /* opacity: 0.7; */
+                -webkit-transition: 0.2s;
+                transition: opacity 0.2s;
             }
 
-            /* Modal Content */
-            .modal-content {
-                background-color: #fefefe;
-                margin: 15% auto; /* 15% from the top and centered */
-                padding: 20px;
-                border: 1px solid #888;
-                width: 30%; /* Could be more or less, depending on screen size */
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 35px;
+                height: 35px;
+                border: 0;
+                background: url("assets/anon-raven-icon.png");
+                cursor: pointer;
             }
 
-            /* The Close Button */
-            .close {
-                color: #aaa;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
+            .slider::-moz-range-thumb {
+                width: 35px;
+                height: 35px;
+                border: 0;
+                background: url("assets/anon-raven-icon.png.png");
                 cursor: pointer;
             }
 
@@ -213,7 +206,6 @@
                 /* margin-right: 20px; */
                 display: none;
             }
-
         </style>
     </head>
     <body>
@@ -485,7 +477,6 @@
             enforceMaxLength("number2");
             enforceMaxLength("number3");
 
-
             // Handle guess Submission and Update Table
             document
                 .getElementById("dataForm")
@@ -549,7 +540,6 @@
                     }
                 });
 
-
             function addSingleRowToChart(inputString, color) {
                 // Adds a single row to the table that is not broken into cells
                 var table = document.getElementById("dataTable");
@@ -575,52 +565,6 @@
             // document.getElementById("number3").value = 3;
             // document.getElementById("rule").value = "Increase by 1";
             // document.getElementById("ruleGuess").value = "Increase by 1";
-
-            // Get the modal
-            // Modal handlers
-            /* 
-            var modal = document.getElementById("ruleModal");
-
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
-
-            // Get the button that closes the modal
-            var closeButton = document.getElementById("closeModal");
-
-            // When the user clicks the button, open the modal 
-            function openModal(ruleGuess, confidence) {
-                
-                // log rule guess
-                console.log('rule guess: ' + ruleGuess);
-
-                // Get correct rule from admin panel
-                let correctRule = document.getElementById("rule").value;
-
-                // Set text in modal
-                document.getElementById("ruleGuessLabel").innerHTML = ruleGuess;
-                document.getElementById("correctRule").innerHTML = correctRule;
-                document.getElementById("confidence-label-modal").innerHTML = confidence + "%";
-
-                modal.style.display = "block";
-            }
-
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function() {
-                modal.style.display = "none";
-            }
-
-            // When the user clicks on "Okay", close the modal
-            closeButton.onclick = function() {
-                modal.style.display = "none";
-            }
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-            */
 
             // Function to submitFinalGuess
             async function submitFinalGuess() {
