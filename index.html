@@ -186,7 +186,27 @@
             /* final guess button disbaled until 3 entries */
             #finalGuessButton {
                 display: none;
-                /* testing */ display: block;
+                /* testing */
+                display: block;
+            }
+
+            #seriesEntryForm {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #seriesEntryForm input[type="number"] {
+                text-align: center;
+                margin: 0 10px;
+                width: 50px; /* adjust as needed */
+                -moz-appearance: textfield; /* disable field arrows on Firefox */
+            }
+            /* Disable field arrows on Chrome / Safaro */
+            #seriesEntryForm input[type="number"]::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
         </style>
     </head>
@@ -208,37 +228,37 @@
                 <h1>User guessing panel</h1>
 
                 <form id="dataForm">
-                    <div class="num-entry-row">
-                        <div class="input-col">
-                            <label for="number1">Number 1:</label>
-                            <input
-                                type="number"
-                                id="number1"
-                                name="number1"
-                                maxlength="5"
-                                required
-                            />
-                        </div>
-
-                        <div class="input-col">
-                            <label for="number2">Number 2:</label>
-                            <input
-                                type="number"
-                                id="number2"
-                                name="number2"
-                                required
-                            />
-                        </div>
-
-                        <div class="input-col">
-                            <label for="number3">Number 3:</label>
-                            <input
-                                type="number"
-                                id="number3"
-                                name="number3"
-                                required
-                            />
-                        </div>
+                    <p>
+                        Enter a series of three numbers to see if that series
+                        meets my rule
+                    </p>
+                    <div id="seriesEntryForm">
+                        <input
+                            type="number"
+                            id="number1"
+                            maxlength="4"
+                            pattern="\d*"
+                            inputmode="numeric"
+                            max="999"
+                        />
+                        <span>,</span>
+                        <input
+                            type="number"
+                            id="number2"
+                            maxlength="4"
+                            pattern="\d*"
+                            inputmode="numeric"
+                            max="999"
+                        />
+                        <span>,</span>
+                        <input
+                            type="number"
+                            id="number3"
+                            maxlength="4"
+                            pattern="\d*"
+                            inputmode="numeric"
+                            max="999"
+                        />
                     </div>
 
                     <label for="rule">Rule:</label>
@@ -262,17 +282,12 @@
                         oninput="updateSliderLabel()"
                     />
 
-                    <!-- checkbox input for if it confirms rule or not -->
-                    <!-- <label for="confirm">Confirm Rule:</label>
-                    <input
-                        type="checkbox"
-                        id="confirm"
-                        name="confirm"
-                        value="confirm"
-                    /><br /><br />  -->
-
                     <input type="submit" value="Submit" />
-                    <button id="finalGuessButton" type="button" onclick="submitFinalGuess()" >
+                    <button
+                        id="finalGuessButton"
+                        type="button"
+                        onclick="submitFinalGuess()"
+                    >
                         Submit Final Guess
                     </button>
 
@@ -405,6 +420,66 @@
             // Data structue to contain submitted guesses
             // Contains objects with the following properties: entryNumber, sequence, rule, matchesRule, confidence
             let userEntries = [];
+
+            // Handle series entry
+            // Move to next field when 4 digits are entered, back to previous field if backspace is pressed and field is empty
+            document
+                .getElementById("number1")
+                .addEventListener("input", function () {
+                    if (this.value.length === this.maxLength) {
+                        document.getElementById("number2").focus();
+                    }
+                });
+
+            document
+                .getElementById("number2")
+                .addEventListener("input", function () {
+                    if (this.value.length === this.maxLength) {
+                        document.getElementById("number3").focus();
+                    }
+                });
+                
+            document
+                .getElementById("number2")
+                .addEventListener("keydown", function (e) {
+                    if (e.key === "Backspace" && this.value.length === 0) {
+                        // Prevent default backspace behavior occuring after cursor is refocused on previous field
+                        e.preventDefault();
+                        document.getElementById("number1").focus();
+                    }
+                });
+
+            document
+                .getElementById("number3")
+                .addEventListener("keydown", function (e) {
+                    if (e.key === "Backspace" && this.value.length === 0) {
+                        // Prevent default backspace behavior occuring after cursor is refocused on previous field
+                        e.preventDefault();
+                        document.getElementById("number2").focus();
+                    }
+                });
+
+            function enforceMaxLength(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.addEventListener("input", function () {
+                    if (this.value.length > 4) {
+                        this.value = this.value.slice(0, 4);
+                    }
+                    if (this.value.length === 4) {
+                        // Move to next field if there is one
+                        var nextField = document.getElementById(
+                            this.dataset.nextFieldId
+                        );
+                        if (nextField) {
+                            nextField.focus();
+                        }
+                    }
+                });
+            }
+            enforceMaxLength("number1");
+            enforceMaxLength("number2");
+            enforceMaxLength("number3");
+
 
             // Handle guess Submission and Update Table
             document
@@ -587,11 +662,9 @@
             }
             */
 
-
             // Function to submitFinalGuess
-            async function submitFinalGuess() { 
-
-                console.log('submitting final guess');
+            async function submitFinalGuess() {
+                console.log("submitting final guess");
 
                 // Get correct rule from admin panel
                 let correctRule = document.getElementById("correctRule").value;
@@ -599,9 +672,9 @@
                 // Get rule guess from user
                 let ruleGuess = document.getElementById("rule").value;
 
-
-                // Prepare prompt for API
-                const apiKey = "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";
+                // Fetch key parameter from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const apiKey = urlParams.get("key");
 
                 const instructions = `
 Your job is to emulate Watson’s “2, 4, 6” experiment, in which there is a rule describing a sequence of numbers. 
@@ -616,28 +689,26 @@ Note that that a rule and rule guess may sound similar but have inherently diffe
 
 Please respond with only “true” or “false”.`;
 
-                const prompt = 
-                `Actual Rule: ${correctRule}. Rule Guess: ${ruleGuess}.`;
-
+                const prompt = `Actual Rule: ${correctRule}. Rule Guess: ${ruleGuess}.`;
 
                 const jsonBody = {
-                        model: "gpt-4",
-                        messages: [
-                            {
-                                role: "system",
-                                content:`${instructions}`,
-                            },
-                            {
-                                role: "user",
-                                content: `${prompt}`,
-                            },
-                        ],
-                        temperature: 1,
-                        max_tokens: 256,
-                        top_p: 1,
-                        frequency_penalty: 0,
-                        presence_penalty: 0,
-                    };
+                    model: "gpt-4",
+                    messages: [
+                        {
+                            role: "system",
+                            content: `${instructions}`,
+                        },
+                        {
+                            role: "user",
+                            content: `${prompt}`,
+                        },
+                    ],
+                    temperature: 1,
+                    max_tokens: 256,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                };
                 // Sent final guess to API
                 try {
                     fetch("https://api.openai.com/v1/chat/completions", {
@@ -650,18 +721,16 @@ Please respond with only “true” or “false”.`;
                     })
                         .then((response) => response.json())
                         .then((data) => {
-                            const apiResponse = data.choices[0].message.content.trim();
+                            const apiResponse =
+                                data.choices[0].message.content.trim();
                             // document.getElementById('apiResponse').innerText = apiResponse;
-                            console.log('apiResponse: ', apiResponse);
+                            console.log("apiResponse: ", apiResponse);
                         })
                         .catch((error) => console.error("Error:", error));
-                }
-                catch (error) {
+                } catch (error) {
                     console.error(error);
                 }
-
             }
-
         </script>
     </body>
 </html>
