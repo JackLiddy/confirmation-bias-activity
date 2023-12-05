@@ -186,6 +186,7 @@
             /* final guess button disbaled until 3 entries */
             #finalGuessButton {
                 display: none;
+                /* testing */ display: block;
             }
         </style>
     </head>
@@ -271,7 +272,7 @@
                     /><br /><br />  -->
 
                     <input type="submit" value="Submit" />
-                    <button id="finalGuessButton" type="button">
+                    <button id="finalGuessButton" type="button" onclick="submitFinalGuess()" >
                         Submit Final Guess
                     </button>
 
@@ -585,6 +586,82 @@
                 }
             }
             */
+
+
+            // Function to submitFinalGuess
+            async function submitFinalGuess() { 
+
+                console.log('submitting final guess');
+
+                // Get correct rule from admin panel
+                let correctRule = document.getElementById("correctRule").value;
+
+                // Get rule guess from user
+                let ruleGuess = document.getElementById("rule").value;
+
+
+                // Prepare prompt for API
+                const apiKey = "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";
+
+                const instructions = `
+Your job is to emulate Watson’s “2, 4, 6” experiment, in which there is a rule describing a sequence of numbers. 
+
+For example, the rule “Numbers increase by 2” may be paired with the sequence 0, 2, 4. 
+
+Students view multiple number sequences and then attempt to guess the pre-determined rule that applies to them.
+
+Your job is to compare the actual rule with a user-submitted rule guess and determine if their guess is correct, even if they are phrased slightly differently. 
+
+Note that that a rule and rule guess may sound similar but have inherently different meanings. For example, the guess “Numbers go up” technically covers the scope of “Numbers double each time” but they are not the same rule. 
+
+Please respond with only “true” or “false”.`;
+
+                const prompt = 
+                `Actual Rule: ${correctRule}. Rule Guess: ${ruleGuess}.`;
+
+
+                const jsonBody = {
+                        model: "gpt-4",
+                        messages: [
+                            {
+                                role: "system",
+                                content:`${instructions}`,
+                            },
+                            {
+                                role: "user",
+                                content: `${prompt}`,
+                            },
+                        ],
+                        temperature: 1,
+                        max_tokens: 256,
+                        top_p: 1,
+                        frequency_penalty: 0,
+                        presence_penalty: 0,
+                    };
+                // Sent final guess to API
+                try {
+                    fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${apiKey}`,
+                        },
+                        body: JSON.stringify(jsonBody),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            const apiResponse = data.choices[0].message.content.trim();
+                            // document.getElementById('apiResponse').innerText = apiResponse;
+                            console.log('apiResponse: ', apiResponse);
+                        })
+                        .catch((error) => console.error("Error:", error));
+                }
+                catch (error) {
+                    console.error(error);
+                }
+
+            }
+
         </script>
     </body>
 </html>
