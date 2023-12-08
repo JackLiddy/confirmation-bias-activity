@@ -119,7 +119,7 @@
                 padding: 10px;
             }
             td {
-                background-color: #6d38a8;
+                /* background-color: #6d38a8; */
                 color: white;
                 padding: 15px;
                 border: 1px solid #ddd;
@@ -132,8 +132,20 @@
                 border: 1px solid #ddd;
                 font-size: medium;
             }
-            
 
+
+            #next-guess-btn {
+                /* margin-top: 20px; */
+            }
+            #compare-results-btn {
+                /* margin-top: 20px; */
+                display: none;
+            }
+
+
+            .highlighted-row {
+                background-color: #291143 !important;  /* change this color as needed */
+            }
 
         </style>
     </head>
@@ -163,71 +175,6 @@
                     <div class="summary-body-left">
                         <!-- table consisting of Series| Matches Rule | Rule Guess | Confidence | Tried to falsify|  -->
                         <table id="dataTable">
-                            <!--
-                            <tr>
-                                <th>Series</th>
-                                <th>Matches Rule</th>
-                                <th>Rule Guess</th>
-                                <th>Confidence</th>
-                                <th>Tried to falsify</th>
-                            </tr>
-                            <tr>
-                                <td>8,10,12</td>
-                                <td>Yes</td>
-                                <td>Even numbers increasing by 2</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>2,4,6</td>
-                                <td>Yes</td>
-                                <td>Even numbers increasing by 2</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                            <tr>
-                                <td>1,2,3</td>
-                                <td>Yes</td>
-                                <td>Increasing by 1</td>
-                                <td>30%</td>
-                                <td>No</td>
-                            </tr>
-                        -->
                         </table> 
                     </div>
                     <div class="summary-body-right">
@@ -238,8 +185,8 @@
                         <h2>Therefore, your first guess was not an attempt to falsify your hypothesis.</h2>
 
                         <!-- button -->
-                        <button>Explore my next guess</button>
-
+                        <button id="next-guess-btn" onclick="viewNextGuess()">Explore my next guess</button>
+                        <button id="compare-results-btn" onclick="viewResultsComparison()">Compare my results</button>
                     </div>
                 </div>
             </div>
@@ -279,6 +226,7 @@
     }
 ]
 
+            currentRow = 0;
 
             function renderTable(userGuesses) {
 
@@ -305,6 +253,8 @@
                 var body = table.createTBody();
                 for (var i = 0; i < userGuesses.length; i++) {
                     var row = body.insertRow(i);
+                    if(i === currentRow) row.classList.add('highlighted-row'); // highlights first row
+
                     var cell = row.insertCell(0);
                     cell.innerHTML = userGuesses[i].sequence;
                     cell = row.insertCell(1);
@@ -321,7 +271,25 @@
 
 
             function viewNextGuess() {
+                var table = document.getElementById("dataTable");
 
+                // Remove highlight from current row
+                table.rows[currentRow + 1].classList.remove('highlighted-row');
+
+                // Move to next row
+                currentRow++;
+                if(currentRow >= table.rows.length - 2) {
+                    //currentRow = 0; // Wraps around to the first row when it reaches the end
+                    // Swap out button for "View Results Comparison" button
+                    document.getElementById("next-guess-btn").style.display = "none";
+                    document.getElementById("compare-results-btn").style.display = "block";
+                }
+
+                // Add highlight to new row
+                table.rows[currentRow + 1].classList.add('highlighted-row');
+
+                // console.log its data
+                console.log(userGuesses[currentRow]);
             }
             function viewPreviousGuess() {
 
