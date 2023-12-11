@@ -41,8 +41,8 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                width: 20%;
-                height: 10%;
+                width: 40%;
+                height: 15%;
                 background-color: #ffffff;
             }
 
@@ -58,19 +58,19 @@
             .summary-header-text {
                 display: flex;
                 flex-direction: column;
-                margin-top: 15px;
+                text-align: center;
             }
-            .summary-header-text h1 {
+            .summary-header-text h2 {
                 /* font-size: 30px; */
                 font-family: sans-serif;
                 text-align: center;
-                margin: 10px;
+                margin: 5px;
             }
             .summary-body {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-evenly;
-                margin-top: 40px;
+                /* margin-top: 40px; */
                 height: 80%;
             }
             .summary-body-left {
@@ -80,16 +80,16 @@
                 justify-content: flex-start;
                 width: 60%;
                 height: 100%;
-                background-color: #ffffff;
+                /* background-color: #ffffff; */
             }
             .summary-body-right {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
-                width: 20%;
+                width: 25%;
                 height: 100%;
-                background-color: #ffffff;
+                /* background-color: #ffffff; */
             }
 
             /* styled table with even spacing, white text, white lines, purple backgroun */
@@ -98,9 +98,10 @@
                 width: 100%;
                 color: white;
                 font-family: sans-serif;
-                font-size: 25px;
+                font-size: 15px;
                 text-align: center;
                 background-color: #6d38a8;
+                /* font-size: clamp(1rem, 2.5vw, 2rem); */
             }
             th {
                 background-color: #6d38a8;
@@ -147,6 +148,9 @@
                 background-color: #291143 !important;  /* change this color as needed */
             }
 
+
+            
+
         </style>
     </head>
     <body>
@@ -157,7 +161,7 @@
             <div class="rule-description-container">
                 <!-- image here -->
                 <div class="rule-description-image">
-                    <img src="assets/raven-white-bg-05.svg" width="150px">
+                    <img src="assets/raven-white-bg-05.svg" width="70px">
                 </div>
                 <div class="rule-description-text">
                     <h2>My rule is:</h2>
@@ -168,8 +172,8 @@
             <!-- Guess summary -->
             <div class="guess-summary-area">
                 <div class="summary-header-text">
-                    <h1>Which of your guesses were attempts to CONFIRM your belief in what you thought the rule was?</h1>
-                    <h1>Which of your guesses were attempts to FAlSIFY your belief in what you thought the rule was?</h1>
+                    <h2>Which of your guesses were attempts to CONFIRM your belief in what you thought the rule was?</h2>
+                    <h2>Which of your guesses were attempts to FAlSIFY your belief in what you thought the rule was?</h2>
                 </div>
                 <div class="summary-body">
                     <div class="summary-body-left">
@@ -178,11 +182,17 @@
                         </table> 
                     </div>
                     <div class="summary-body-right">
-                        <h2>For your first guess, your hypothesis was that the rule was even numbers increasing by 2.</h2>
+                        <!-- <h2>For your first guess, your hypothesis was that the rule was even numbers increasing by 2.</h2>
                         <h2>The number series you used for your first guess was 8,10,12.</h2>
                         <h2>Your first guess was an attempt to confirm your hypothesis.</h2>
                         <h2>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</h2>
-                        <h2>Therefore, your first guess was not an attempt to falsify your hypothesis.</h2>
+                        <h2>Therefore, your first guess was not an attempt to falsify your hypothesis.</h2> -->
+
+                        <p>For your first guess, your hypothesis was that the rule was even numbers increasing by 2.</p>
+                        <p>The number series you used for your first guess was 8,10,12.</p>
+                        <p>Your first guess was an attempt to confirm your hypothesis.</p>
+                        <p>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</p>
+                        <p>Therefore, your first guess was not an attempt to falsify your hypothesis.</p>
 
                         <!-- button -->
                         <button id="next-guess-btn" onclick="viewNextGuess()">Explore my next guess</button>
