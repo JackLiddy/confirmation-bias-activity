@@ -82,9 +82,9 @@
             th {
                 background-color: #f0f0f0;
             }
-            tr:hover {
+            /* tr:hover {
                 background-color: #f5f5f5;
-            }
+            } */
             input[type="number"],
             input[type="text"] {
                 padding: 10px;
@@ -197,7 +197,7 @@
             #finalGuessButton {
                 display: none;
                 /* testing */
-                display: block;
+                /* display: block; */
             }
 
             #seriesEntryForm {
@@ -207,6 +207,7 @@
                 background: #6d39a8;
                 padding: 8px;
                 color: #ffffff;
+                border-radius: 5px;
             }
 
             #seriesEntryForm input[type="number"] {
@@ -305,10 +306,10 @@
                 /* background-color: #ffffff; */
             }
 
-            .results-page-container {
+            /* .results-page-container { */
 
             /* styled table with even spacing, white text, white lines, purple backgroun */
-            table {
+            #resultsTable {
                 border-collapse: collapse;
                 width: 100%;
                 color: white;
@@ -318,23 +319,23 @@
                 background-color: #6d38a8;
                 /* font-size: clamp(1rem, 2.5vw, 2rem); */
             }
-            th {
+            .results-table-header {
                 background-color: #6d38a8;
                 color: white;
                 padding: 10px;
                 border: 1px solid #ddd;
             }
-            tr:nth-child(even) {
+            .results-table-row:nth-child(even) {
                 background-color: #6d38a8;
                 color: white;
                 padding: 10px;
             }
-            tr:nth-child(odd) {
+            .results-table-row:nth-child(odd) {
                 background-color: #6d38a8;
                 color: white;
                 padding: 10px;
             }
-            td {
+            .results-table-cell {
                 /* background-color: #6d38a8; */
                 color: white;
                 padding: 15px;
@@ -362,7 +363,7 @@
                 background-color: #291143 !important;  /* change this color as needed */
             }
 
-        }
+        
 
 
 
@@ -397,6 +398,7 @@
                             pattern="\d*"
                             inputmode="numeric"
                             max="9999"
+                            required
                         />
                         <span>,</span>
                         <input
@@ -406,6 +408,7 @@
                             pattern="\d*"
                             inputmode="numeric"
                             max="9999"
+                            required
                         />
                         <span>,</span>
                         <input
@@ -415,6 +418,7 @@
                             pattern="\d*"
                             inputmode="numeric"
                             max="9999"
+                            required
                         />
                     </div>
 
@@ -501,7 +505,7 @@
                 <div class="summary-body">
                     <div class="summary-body-left">
                         <!-- table consisting of Series| Matches Rule | Rule Guess | Confidence | Tried to falsify|  -->
-                        <table id="dataTable">
+                        <table id="resultsTable">
                         </table> 
                     </div>
                     <div class="summary-body-right">
@@ -873,15 +877,24 @@ Please respond with only “true” or “false”.`;
             
             function renderTable(userGuesses) {
 
+                console.log('rendering table');
+
                 // Table formatted as Series (3 numbers), Matches Rule (Yes/No), Rule Guess (text), Confidence (1-100%), Tried to falsify (Yes/No)
 
                 // Select table
-                var table = document.getElementById("dataTable");
+                var table = document.getElementById("resultsTable");
 
                 // Create table header
                 var header = table.createTHead();
+                // set class of header row
+                header.classList.add('results-table-header');
+
+
                 var row = header.insertRow(0);
+                row.classList.add('results-table-row');
+
                 var cell = row.insertCell(0);
+                cell.classList.add('results-table-cell');
                 cell.innerHTML = "<b>Series</b>";
                 cell = row.insertCell(1);
                 cell.innerHTML = "<b>Matches Rule</b>";
@@ -914,7 +927,7 @@ Please respond with only “true” or “false”.`;
 
 
             function viewNextGuess() {
-                var table = document.getElementById("dataTable");
+                var table = document.getElementById("resultsTable");
 
                 // Remove highlight from current row
                 table.rows[currentRow + 1].classList.remove('highlighted-row');
