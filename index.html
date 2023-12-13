@@ -154,10 +154,12 @@
             .slider::-webkit-slider-thumb {
                 -webkit-appearance: none;
                 appearance: none;
-                width: 35px;
-                height: 35px;
+                width: 48px;
+                height: 38px;
                 border: 0;
-                background: url("assets/anon-raven-icon.png");
+                /* background: url("assets/anon-raven-icon.png"); */
+                /* background: url("assets/raven-white-bg-16-icon.png"); */
+                background: url("assets/raven-white-bg-16.svg");
                 cursor: pointer;
             }
 
@@ -165,7 +167,8 @@
                 width: 35px;
                 height: 35px;
                 border: 0;
-                background: url("assets/anon-raven-icon.png.png");
+                /* background: url("assets/anon-raven-icon.png.png"); */
+                background: url("assets/raven-white-bg-16.svg");
                 cursor: pointer;
             }
             .slider:hover {
@@ -194,7 +197,7 @@
 
 
             /* final guess button disbaled until 3 entries */
-            #finalGuessButton {
+            #finalGuessBtn {
                 /* display: none; */
                 /* testing */
                 display: block;
@@ -499,7 +502,7 @@
                     <input type="submit" value="Submit Final Guess" name="finalGuessBtn" id="finalGuessBtn"/> 
 
                     <!-- <button
-                        id="finalGuessButton"
+                        id="finalGuessBtn"
                         type="submit"
                         onclick="submitFinalGuess()"
 
@@ -829,7 +832,7 @@
                     // If the user has submitted 3 entries, display the final guess button
                     if (entryCount === 3) {
                         document.getElementById(
-                            "finalGuessButton"
+                            "finalGuessBtn"
                         ).style.display = "block";
                     }
                 });
@@ -891,7 +894,7 @@
                     // If the user has submitted 3 entries, display the final guess button
                     if (entryCount === 3) {
                         document.getElementById(
-                            "finalGuessButton"
+                            "finalGuessBtn"
                         ).style.display = "block";
                     }
             }
@@ -1011,8 +1014,11 @@ Please respond with only “true” or “false”.`;
 
 
             // Results page functions
-            currentRow = 0;
-            
+            let currentRow = 0;
+            let userGuesses = [];
+            let disproveFeedback = [];
+
+            // Initial render of table and fetching of feedback
             function renderTable(userGuesses) {
 
                 console.log('rendering table');
@@ -1060,9 +1066,15 @@ Please respond with only “true” or “false”.`;
                     cell = row.insertCell(4);
                     // cell.innerHTML = userGuesses[i].triedToFalsify;
                 }
-                renderGuessFeedback(currentRow);
+                // Fetch AI feedback then render custom feedback message
+                fetchDisprovalFeedback().then(() => {
+                    // Add feedback to summary body right
+                    renderGuessFeedback(currentRow);
+                    console.log('disprove feedback:', disproveFeedback);
+                }).catch((error) => {
+                    alert('There was an error retrieving feedback from the AI model');
+                });
             }
-            // renderTable(userGuesses);
 
 
             function viewNextGuess() {
@@ -1099,6 +1111,13 @@ Please respond with only “true” or “false”.`;
             function renderGuessFeedback(guessNumber){
                 // Display feedback for guess number
 
+                // fetchDisprovalFeedback();
+                // If response 
+                // if (disproveFeedback){
+
+                // }
+
+
                 // Get guess
                 let guess = userEntries[guessNumber];
                 let guessRule = guess.rule;
@@ -1109,17 +1128,20 @@ Please respond with only “true” or “false”.`;
                 // Ternary operator: if guess number is 0, then use 'first', else use 'next'
                 let guessNumberText = guessNumber === 0 ? 'first' : 'next';
 
+                let confirmMessage = disproveFeedback[guessNumber] ? 'confirm' : 'falsify';
+                console.log('contents of disproveFeedback: ', disproveFeedback);
+
                 let feedbackText =
                 `<p>For your ${guessNumberText} guess, your hypothesis was <b>${guessRule}</b>.</p>
                 <p>The number series you used for your first guess was <b>${guessSequence}</b>.</p>
-                <p>Your first guess was an attempt to confirm your hypothesis.</p>
+                <p>Your guess was an attempt to ${confirmMessage} your hypothesis.</p>
                 <p>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</p>
                 <p>Therefore, your first guess was not an attempt to falsify your hypothesis.</p>`;
 
                 // Add feedback to summary body right
                 document.querySelector('.feedback-text').innerHTML = feedbackText;
 
-                fetchDisprovalFeedback();
+                // fetchDisprovalFeedback();
 
             }
 
@@ -1150,7 +1172,8 @@ Please respond with only “true” or “false”.`;
                 console.log(prompt);
 
                 const jsonBody = {
-                    model: "gpt-4-1106-preview", // gpt-4 vs gpt-4-1106-preview
+                    // model: "gpt-4-1106-preview", // gpt-4 vs gpt-4-1106-preview
+                    model: "gpt-4",
                     messages: [
                         {
                             role: "system",
@@ -1169,7 +1192,7 @@ Please respond with only “true” or “false”.`;
                 };
                 // Sent final guess to API
                 try {
-                    fetch("https://api.openai.com/v1/chat/completions", {
+                    await fetch("https://api.openai.com/v1/chat/completions", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -1182,42 +1205,31 @@ Please respond with only “true” or “false”.`;
                             console.log("content before trim: ", data.choices[0].message.content);
                             const apiResponse =
                                 data.choices[0].message.content.trim();
-                            // document.getElementById('apiResponse').innerText = apiResponse;
                             console.log("apiResponse: ", apiResponse);
                             alert(apiResponse);
 
-                            let responseExample = `apiResponse:  [
-                            {
-    "entryNumber": 0,
-    "disproveAttempt": false
-  },
-  {
-    "entryNumber": 1,
-    "disproveAttempt": false
-  },
-  {
-    "entryNumber": 2,
-    "disproveAttempt": false
-  } `
+                            // extract disproveAttempt values from apiResponse
+                            let disproveAttempts = JSON.parse(apiResponse);
+                            console.log('disproveAttempts: ', disproveAttempts);
+                            // iterate through disproveAttempts and log
+                            for (let i = 0; i < disproveAttempts.length; i++) {
+                                console.log('disproveAttempt: ', disproveAttempts[i].disproveAttempt);
+                                disproveFeedback.push(disproveAttempts[i].disproveAttempt);
+                            }
 
-                        // extract disproveAttempt values from apiResponse
-                        let disproveAttempts = JSON.parse(apiResponse);
-                        console.log('disproveAttempts: ', disproveAttempts);
-                        // iterate through disproveAttempts and log
-                        for (let i = 0; i < disproveAttempts.length; i++) {
-                            console.log('disproveAttempt: ', disproveAttempts[i].disproveAttempt);
-                        }
-
-                        // Render disprove attempts in tables Tried to falsify column
-                        let table = document.getElementById("resultsTable");
-                        for (let i = 0; i < disproveAttempts.length; i++) {
-                            let cell = table.rows[i + 1].cells[4];
-                            cell.innerHTML = disproveAttempts[i].disproveAttempt;
-                        }
+                            // Render disprove attempts in tables Tried to falsify column
+                            let table = document.getElementById("resultsTable");
+                            for (let i = 0; i < disproveAttempts.length; i++) {
+                                let cell = table.rows[i + 1].cells[4];
+                                cell.innerHTML = disproveAttempts[i].disproveAttempt;
+                            }
 
 
                         })
-                        .catch((error) => console.error("Error:", error));
+                        .catch((error) => {
+                            console.error("Error:", error)
+                            alert('There was an error retrieving valid feedback from the AI model');
+                        });
                 } catch (error) {
                     console.error(error);
                 }
