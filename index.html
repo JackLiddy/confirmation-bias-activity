@@ -201,6 +201,8 @@
                 /* display: none; */
                 /* testing */
                 display: block;
+                margin-top: 20px;
+                padding: 10px;
             }
 
             #seriesEntryForm {
@@ -302,6 +304,13 @@
                 bottom: -60px;
                 left: -72px;
             }
+
+            #rule {
+                background-color: #6d39a8;
+                color: white;
+                padding: 10px;
+            }
+
 
             .guess-summary-area {
                 display: flex;
@@ -406,7 +415,19 @@
                 background-color: #291143 !important;  /* change this color as needed */
             }
 
-        
+            #dataForm p {
+                font-size: 18px;
+            }
+
+            #dataForm h3 {
+                font-size: 32px;
+                margin: 5px;
+                padding: 0px;
+                align-self: baseline;
+                text-align: left;
+            }
+
+    
 
 
 
@@ -426,9 +447,10 @@
                 </select>
             </div>
             <div class="input-pane">
-                <h1>Activity 1.1 Confirmation Bias</h1>
+                <!-- <h1>Activity 1.1 Confirmation Bias</h1> -->
 
                 <form id="dataForm">
+                    <h3>Let's start guessing</h3>
                     <p>
                         Enter a series of three numbers to see if that series
                         meets my rule
@@ -467,6 +489,8 @@
 
                     <!-- <label for="rule">Rule:</label> -->
 
+                    <h3>What rule are you guessing?</h3>
+
                     <p>Type the rule you are testing with your above guess</p>
 
                     <input
@@ -476,12 +500,15 @@
                         required
                     /><br /><br />
 
+                    <h3>How confident are you that you have guessed the rule?</h3>
+
                     <p>Drag Rigorous Raven to show your confidence in your guess</p>
 
                     <label for="myRange" id="confidence-label"
                         >Confidence: 50%</label
                     >
                     
+
                     <div class="confidence-and-submit-container">
 
                         <input
@@ -1131,12 +1158,28 @@ Please respond with only “true” or “false”.`;
                 let confirmMessage = disproveFeedback[guessNumber] ? 'confirm' : 'falsify';
                 console.log('contents of disproveFeedback: ', disproveFeedback);
 
+
+                let confirmMsg = `<p>What I mean by that is that the number series you used in your guess was a number series that fit the rule that you hypothesized to be my rule.</p>
+                                    <p>Therefore, first guess was not an attempt to falsify your hypothesis.</p>`;
+                let falsifyMsg = `<p>What I mean by that is that the number series you used in your guess was a number series that did not fit the rule that you hypothesized to be my rule.</p>
+                                <p>Therefore, your guess was an attempt to falsify your hypothesis.</p>`;
+                // ternary operator
+                let feedbackEnding = disproveFeedback[guessNumber] ? confirmMsg : falsifyMsg;
+
                 let feedbackText =
                 `<p>For your ${guessNumberText} guess, your hypothesis was <b>${guessRule}</b>.</p>
                 <p>The number series you used for your first guess was <b>${guessSequence}</b>.</p>
-                <p>Your guess was an attempt to ${confirmMessage} your hypothesis.</p>
-                <p>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</p>
-                <p>Therefore, your first guess was not an attempt to falsify your hypothesis.</p>`;
+                <p>Your guess was an attempt to <b>${confirmMessage}</b> your hypothesis.</p>
+                ${feedbackEnding}`;
+
+                
+                if(disproveFeedback.length === 0){
+                    feedbackText = `<p>For your ${guessNumberText} guess, your hypothesis was <b>${guessRule}</b>.</p>
+                    <p>The number series you used for your first guess was <b>${guessSequence}</b>.</p>
+                    <p>There was an error processing your AI-powered feedback.</p>
+                    <p>Unfortunately, I don't have any further feedback for you at this time.</p>`;
+                }
+
 
                 // Add feedback to summary body right
                 document.querySelector('.feedback-text').innerHTML = feedbackText;
