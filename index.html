@@ -195,9 +195,9 @@
 
             /* final guess button disbaled until 3 entries */
             #finalGuessButton {
-                display: none;
+                /* display: none; */
                 /* testing */
-                /* display: block; */
+                display: block;
             }
 
             #seriesEntryForm {
@@ -255,9 +255,49 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                width: 40%;
+                width: 60%;
                 height: 15%;
                 background-color: #ffffff;
+            }
+            .rule-description-text {
+                /* display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%; */
+                /* background-color: #ffffff; */
+                text-align: center;
+            }
+            .rule-description-text h2 {
+                /* font-size: 30px; */
+                font-family: sans-serif;
+                text-align: center;
+                margin: 5px;
+            }
+            .rule-description-image {
+
+                position: relative;
+                width: 37px;
+
+
+                /* display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 40%;
+                height: 100%; */
+                /* background-color: #ffffff; */
+
+            }
+            .rule-description-image img {
+                /* width: 100%; */
+                /* height: 100%; */
+                /* background-color: #ffffff; */
+                width: 112px;
+                position: absolute;
+                bottom: -60px;
+                left: -72px;
             }
 
             .guess-summary-area {
@@ -266,7 +306,7 @@
                 align-items: center;
                 justify-content: flex-start;
                 width: 90%;
-                height: 60%;
+                height: 70%;
                 background-color: #ffffff;
             }
             .summary-header-text {
@@ -301,7 +341,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
-                width: 25%;
+                width: 35%;
                 height: 100%;
                 /* background-color: #ffffff; */
             }
@@ -451,17 +491,21 @@
                             oninput="updateSliderLabel()"
                         />
 
-                        <input type="submit" value="Submit Your Guess" /> 
+                        <input type="submit" value="Submit Your Guess" name="submitGuessBtn" id="submitGuessBtn"/> 
                     
                     </div>
 
-                    <button
+
+                    <input type="submit" value="Submit Final Guess" name="finalGuessBtn" id="finalGuessBtn"/> 
+
+                    <!-- <button
                         id="finalGuessButton"
-                        type="button"
+                        type="submit"
                         onclick="submitFinalGuess()"
+
                     >
                         Submit Final Guess
-                    </button>
+                    </button> -->
 
                     <!-- <button id="showRuleBtn" type="button">Show Rule</button> -->
                 </form>
@@ -488,7 +532,7 @@
             <div class="rule-description-container">
                 <!-- image here -->
                 <div class="rule-description-image">
-                    <img src="assets/raven-white-bg-05.svg" width="70px">
+                    <img class="rule-description-raven" src="assets/raven-white-bg-05.svg" width="70px">
                 </div>
                 <div class="rule-description-text">
                     <h2>My rule is:</h2>
@@ -499,8 +543,8 @@
             <!-- Guess summary -->
             <div class="guess-summary-area">
                 <div class="summary-header-text">
-                    <h2>Which of your guesses were attempts to CONFIRM your belief in what you thought the rule was?</h2>
-                    <h2>Which of your guesses were attempts to FAlSIFY your belief in what you thought the rule was?</h2>
+                    <h3>Which of your guesses were attempts to CONFIRM your belief in what you thought the rule was?</h3>
+                    <h3>Which of your guesses were attempts to FAlSIFY your belief in what you thought the rule was?</h3>
                 </div>
                 <div class="summary-body">
                     <div class="summary-body-left">
@@ -510,12 +554,7 @@
                     </div>
                     <div class="summary-body-right">
 
-                        <p>For your first guess, your hypothesis was that the rule was even numbers increasing by 2.</p>
-                        <p>The number series you used for your first guess was 8,10,12.</p>
-                        <p>Your first guess was an attempt to confirm your hypothesis.</p>
-                        <p>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</p>
-                        <p>Therefore, your first guess was not an attempt to falsify your hypothesis.</p>
-
+                        <div class="feedback-text"></div>
                         <!-- button -->
                         <button id="next-guess-btn" onclick="viewNextGuess()">Explore my next guess</button>
                         <button id="compare-results-btn" onclick="viewResultsComparison()">Compare my results</button>
@@ -698,7 +737,43 @@
             document
                 .getElementById("dataForm")
                 .addEventListener("submit", function (event) {
+                    // Rest of event handler ...
                     event.preventDefault();
+
+                    let submitter = event.submitter;
+                    let handler = submitter.id;
+
+                    let clickedButtonId = event.submitter.id;
+                    if (clickedButtonId === "finalGuessBtn") {
+                        // submitFinalGuess();
+                        console.log('finalGuessBtn pressed');
+                        submitGuess();
+                        submitFinalGuess()
+                        // return;
+                    }
+                    else if (clickedButtonId === "submitGuessBtn") {
+                        // submitGuess();
+                        console.log('submitGuessBtn pressed'); // triggered on enter key
+                        submitGuess();
+                        // return;
+                    }
+                    else {
+                        console.log('Error: unknown button clicked');
+                    }
+
+                    return;
+
+
+                    // console.log('Submitted:' + submitter);
+                    // console.log('Handler:' + handler);
+
+                    // console.log('Event:' + event);
+                    // event.preventDefault();
+
+                    // console.log('Event:' + event);
+
+                    // let activeElement = document.activeElement.id;
+                    // console.log('Active Element:' + activeElement);
 
                     // Retrieve form data
                     let number1 = document.getElementById("number1").value;
@@ -759,6 +834,69 @@
                     }
                 });
 
+
+            function submitGuess() {
+
+                    // Retrieve form data
+                    let number1 = document.getElementById("number1").value;
+                    let number2 = document.getElementById("number2").value;
+                    let number3 = document.getElementById("number3").value;
+                    let rule = document.getElementById("rule").value;
+                    let confidence = document.getElementById("myRange").value;
+
+                    // Get correct rule from admin panel
+                    let correctRule =
+                        document.getElementById("correctRule").value;
+                    // Check if the numbers follow the rule
+                    let isCorrect = ruleDict[correctRule](
+                        parseInt(number1),
+                        parseInt(number2),
+                        parseInt(number3)
+                    );
+
+                    // Add entry to userEntries array
+                    userEntries.push({
+                        entryNumber: entryCount,
+                        sequence: number1 + ", " + number2 + ", " + number3,
+                        rule: rule,
+                        matchesRule: isCorrect,
+                        confidence: confidence,
+                    });
+
+                    console.log(userEntries);
+
+                    // Adding a new row to the table
+                    let table = document.getElementById("dataTable");
+                    let newRow = table.insertRow();
+                    let cell1 = newRow.insertCell(0);
+                    let cell2 = newRow.insertCell(1);
+                    let cell3 = newRow.insertCell(2);
+                    let cell4 = newRow.insertCell(3);
+                    let cell5 = newRow.insertCell(4);
+
+                    entryCount++;
+
+                    // Display entry in table
+                    cell1.innerHTML = entryCount;
+                    cell2.innerHTML = number1 + ", " + number2 + ", " + number3;
+                    cell3.innerHTML = rule;
+                    cell4.innerHTML = isCorrect;
+                    cell5.innerHTML = confidence + "%";
+
+                    // console.log('numbers(pre type conversation): ' + number1 + ', ' + number2 + ', ' + number3);
+
+                    // Clearing the form for next entry
+                    document.getElementById("dataForm").reset();
+
+                    // If the user has submitted 3 entries, display the final guess button
+                    if (entryCount === 3) {
+                        document.getElementById(
+                            "finalGuessButton"
+                        ).style.display = "block";
+                    }
+            }
+
+
             function addSingleRowToChart(inputString, color) {
                 // Adds a single row to the table that is not broken into cells
                 var table = document.getElementById("dataTable");
@@ -789,7 +927,7 @@
             async function submitFinalGuess() {
 
                 loadResultsPage();
-                return;
+                return; // Exit execution until use for rendering comparison
                 
                 console.log("submitting final guess");
 
@@ -922,11 +1060,13 @@ Please respond with only “true” or “false”.`;
                     cell = row.insertCell(4);
                     // cell.innerHTML = userGuesses[i].triedToFalsify;
                 }
+                renderGuessFeedback(currentRow);
             }
             // renderTable(userGuesses);
 
 
             function viewNextGuess() {
+                console.log('viewing next guess');
                 var table = document.getElementById("resultsTable");
 
                 // Remove highlight from current row
@@ -945,7 +1085,8 @@ Please respond with only “true” or “false”.`;
                 table.rows[currentRow + 1].classList.add('highlighted-row');
 
                 // console.log its data
-                console.log(userGuesses[currentRow]);
+                console.log(userEntries[currentRow]);
+                renderGuessFeedback(currentRow);
             }
             function viewPreviousGuess() {
 
@@ -953,6 +1094,136 @@ Please respond with only “true” or “false”.`;
             function viewResultsComparison() {
 
             }
+
+            // Render guess feedback
+            function renderGuessFeedback(guessNumber){
+                // Display feedback for guess number
+
+                // Get guess
+                let guess = userEntries[guessNumber];
+                let guessRule = guess.rule;
+                let guessSequence = guess.sequence;
+                let guessMatchesRule = guess.matchesRule;
+                let guessConfidence = guess.confidence;
+
+                // Ternary operator: if guess number is 0, then use 'first', else use 'next'
+                let guessNumberText = guessNumber === 0 ? 'first' : 'next';
+
+                let feedbackText =
+                `<p>For your ${guessNumberText} guess, your hypothesis was <b>${guessRule}</b>.</p>
+                <p>The number series you used for your first guess was <b>${guessSequence}</b>.</p>
+                <p>Your first guess was an attempt to confirm your hypothesis.</p>
+                <p>What I mean by that is that the number series you used in your first guess was a number series that fit the rule that you hypothesized to be my rule.</p>
+                <p>Therefore, your first guess was not an attempt to falsify your hypothesis.</p>`;
+
+                // Add feedback to summary body right
+                document.querySelector('.feedback-text').innerHTML = feedbackText;
+
+                fetchDisprovalFeedback();
+
+            }
+
+
+            // function to get feedback on hypothesis disproving 
+            async function fetchDisprovalFeedback() {
+                // Fetch key parameter from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const apiKey = urlParams.get("key");
+
+                // Load text from feedbackPrompt.txt
+                const instructions = await fetch('feedbackPrompt.txt')
+                    .then(response => response.text())
+                    .then(data => {
+                        return data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        // TODO: alert of error + cleanup execution
+                        return;
+                    });
+                
+                console.log('instructions: ', instructions);
+                console.log('userEntries: ', userEntries);
+
+                // Convert all contents of userEntries into a readable string
+                const prompt = JSON.stringify(userEntries);
+                console.log(prompt);
+
+                const jsonBody = {
+                    model: "gpt-4-1106-preview", // gpt-4 vs gpt-4-1106-preview
+                    messages: [
+                        {
+                            role: "system",
+                            content: `${instructions}`,
+                        },
+                        {
+                            role: "user",
+                            content: `${prompt}`,
+                        },
+                    ],
+                    temperature: 1,
+                    max_tokens: 256,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                };
+                // Sent final guess to API
+                try {
+                    fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${apiKey}`,
+                        },
+                        body: JSON.stringify(jsonBody),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log("content before trim: ", data.choices[0].message.content);
+                            const apiResponse =
+                                data.choices[0].message.content.trim();
+                            // document.getElementById('apiResponse').innerText = apiResponse;
+                            console.log("apiResponse: ", apiResponse);
+                            alert(apiResponse);
+
+                            let responseExample = `apiResponse:  [
+                            {
+    "entryNumber": 0,
+    "disproveAttempt": false
+  },
+  {
+    "entryNumber": 1,
+    "disproveAttempt": false
+  },
+  {
+    "entryNumber": 2,
+    "disproveAttempt": false
+  } `
+
+                        // extract disproveAttempt values from apiResponse
+                        let disproveAttempts = JSON.parse(apiResponse);
+                        console.log('disproveAttempts: ', disproveAttempts);
+                        // iterate through disproveAttempts and log
+                        for (let i = 0; i < disproveAttempts.length; i++) {
+                            console.log('disproveAttempt: ', disproveAttempts[i].disproveAttempt);
+                        }
+
+                        // Render disprove attempts in tables Tried to falsify column
+                        let table = document.getElementById("resultsTable");
+                        for (let i = 0; i < disproveAttempts.length; i++) {
+                            let cell = table.rows[i + 1].cells[4];
+                            cell.innerHTML = disproveAttempts[i].disproveAttempt;
+                        }
+
+
+                        })
+                        .catch((error) => console.error("Error:", error));
+                } catch (error) {
+                    console.error(error);
+                }
+
+            }
+            // fetchDisprovalFeedback();
 
         </script>
     </body>
