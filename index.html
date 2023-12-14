@@ -52,6 +52,8 @@
                 /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
                 margin-bottom: 20px;
                 box-shadow: 4px 4px 3px 0px #6d39a8;
+                width: 550px;
+
             }
 
             #dataForm {
@@ -73,14 +75,20 @@
                 border-collapse: collapse;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 min-width: 300px;
+                background-color: #6d38a8;
+                color: white;
             }
             th,
             td {
                 padding: 10px;
                 border: 1px solid #ddd;
+                background-color: #6d38a8;
+                color: white;
             }
             th {
                 background-color: #f0f0f0;
+                background-color: #6d38a8;
+                color: white;
             }
             /* tr:hover {
                 background-color: #f5f5f5;
@@ -105,7 +113,7 @@
                 /* margin-top: 10px; */
             }
             input[type="submit"]:hover {
-                background-color: #45a049;
+                background-color: #251736;
             }
 
             /* input[type="number"],
@@ -129,33 +137,24 @@
                 background-color: #45a049;
             }
 
-            .slider {
-                /* -webkit-appearance: none; */
-                width: 100%;
-                /* height: 25px; */
-                /* background: #d3d3d3; */
-                /* outline: none; */
-                /* opacity: 0.7; */
-                -webkit-transition: 0.2s;
-                /* transition: opacity 0.2s; */
-            }
 
             .slider {
                 -webkit-appearance: none;
                 width: 100%;
-                height: 15px;
-                background: #d3d3d3;
+                height: 20px;
+                background: #ffffff;
                 outline: none;
                 opacity: 0.9;
                 -webkit-transition: 0.3s;
                 transition: opacity 0.3s;
+                border-radius: 5px;
             }
 
             .slider::-webkit-slider-thumb {
                 -webkit-appearance: none;
                 appearance: none;
-                width: 48px;
-                height: 38px;
+                width: 64px;
+                height: 55px;
                 border: 0;
                 /* background: url("assets/anon-raven-icon.png"); */
                 /* background: url("assets/raven-white-bg-16-icon.png"); */
@@ -164,8 +163,8 @@
             }
 
             .slider::-moz-range-thumb {
-                width: 35px;
-                height: 35px;
+                width: 48px;
+                height: 38px;
                 border: 0;
                 /* background: url("assets/anon-raven-icon.png.png"); */
                 background: url("assets/raven-white-bg-16.svg");
@@ -189,7 +188,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                width: 100%;
+                width: 80%;
                 gap: 10px;
                 background: #6d39a8;
                 padding: 8px;
@@ -213,18 +212,21 @@
                 padding: 8px;
                 color: #ffffff;
                 border-radius: 5px;
+                font-size: larger;
+                width: 80%;
             }
 
             #seriesEntryForm input[type="number"] {
                 text-align: center;
                 margin: 0 10px;
-                width: 50px; /* adjust as needed */
+                width: 75px; /* adjust as needed */
                 -moz-appearance: textfield; /* disable field arrows on Firefox */
                 background: #6d39a8;
                 color: #ffffff;
                 border: none;
                 border-bottom: #ffffff 2px solid;
                 border-radius: 0px;
+                font-size: larger;
             }
             #seriesEntryForm input[type="number"]:hover {
                 background: #8344cb;;
@@ -260,9 +262,9 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                width: 60%;
-                height: 15%;
                 background-color: #ffffff;
+                width: 500px;
+                height:min-content;
             }
             .rule-description-text {
                 /* display: flex;
@@ -309,6 +311,26 @@
                 background-color: #6d39a8;
                 color: white;
                 padding: 10px;
+                font-size: larger;
+                border: 0px;
+                border-bottom: #ffffff 2px solid;
+                border-radius: 0px;
+                /* padding: 50px; */
+            }
+
+
+            #rule-input-area {
+                background-color: #6d39a8;
+                /* margin:50px; */
+                width: 80%;
+                border-radius: 5px;
+                padding: 5px;
+            }
+
+
+            #submitGuessBtn {
+                width: 95px;
+                text-wrap: balance;
             }
 
 
@@ -355,6 +377,8 @@
                 justify-content: flex-start;
                 width: 35%;
                 height: 100%;
+                justify-content: space-between;
+
                 /* background-color: #ffffff; */
             }
 
@@ -417,6 +441,8 @@
 
             #dataForm p {
                 font-size: 18px;
+                width: 85%;
+                text-align: left;
             }
 
             #dataForm h3 {
@@ -493,12 +519,17 @@
 
                     <p>Type the rule you are testing with your above guess</p>
 
-                    <input
-                        type="text"
-                        id="rule"
-                        name="rule"
-                        required
-                    /><br /><br />
+                    <div id="rule-input-area">
+
+                        <input
+                            type="text"
+                            id="rule"
+                            name="rule"
+                            required
+                        />
+                </div>
+                    <br /><br />
+                    
 
                     <h3>How confident are you that you have guessed the rule?</h3>
 
@@ -741,6 +772,32 @@
                         document.getElementById("number2").focus();
                     }
                 });
+
+
+            // Handler to series entry form div - onClick send docus to first input
+            document.getElementById("seriesEntryForm").addEventListener("click", function () {
+                document.getElementById("number1").focus();
+            });
+            // On hover, change background color of series entry form
+            document.getElementById("seriesEntryForm").addEventListener("mouseover", function () {
+                document.getElementById("seriesEntryForm").style.backgroundColor = "#8344cb";
+                document.getElementById("number1").style.backgroundColor = "#8344cb";
+                document.getElementById("number2").style.backgroundColor = "#8344cb";
+                document.getElementById("number3").style.backgroundColor = "#8344cb";
+            });
+            document.getElementById("seriesEntryForm").addEventListener("mouseout", function () {
+                document.getElementById("seriesEntryForm").style.backgroundColor = "#6d39a8";
+                document.getElementById("number1").style.backgroundColor = "#6d39a8";
+                document.getElementById("number2").style.backgroundColor = "#6d39a8";
+                document.getElementById("number3").style.backgroundColor = "#6d39a8";
+            });
+            // On hover, change background color of rule entry form
+            document.getElementById("rule").addEventListener("mouseover", function () {
+                document.getElementById("rule").style.backgroundColor = "#8344cb";
+            });
+            document.getElementById("rule").addEventListener("mouseout", function () {
+                document.getElementById("rule").style.backgroundColor = "#6d39a8";
+            });
 
             function enforceMaxLength(fieldId) {
                 var field = document.getElementById(fieldId);
@@ -1181,7 +1238,7 @@ Please respond with only “true” or “false”.`;
                 }
 
 
-                // Add feedback to summary body right
+                // Add feedback to    width: 550px; summary body right
                 document.querySelector('.feedback-text').innerHTML = feedbackText;
 
                 // fetchDisprovalFeedback();

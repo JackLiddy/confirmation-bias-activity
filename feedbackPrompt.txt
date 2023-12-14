@@ -18,3 +18,5 @@ Please respond with strictly true or false for you analysis of each. Format your
         "disproveAttempt": false
     }
 ]
+
+No not respond with any additional textm just this formatted json response. Even if you cant come up with an answer.
