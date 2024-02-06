@@ -31,26 +31,6 @@
             margin: 0;
         }
 
-        .instructions-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            display: none;
-        }
-        .instructions-text {
-            /* display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center; */
-            height: 100vh;
-            color: white;
-            text-align: left;
-
-        }
-
-
 
         .app-container {
             /* width: 500px; */
@@ -519,12 +499,66 @@
             height: 100%;
             /* background-color: #ffffff; */
         }
+
+        .instructions-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.instructions-text-container {
+    background-color: #6d39a8;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px; /* Limit max width for better readability */
+    margin: auto; /* Center the container vertically and horizontally */
+    text-align: left;
+    /* position: relative; For positioning the close button */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.close-modal-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto 0; /* Center the button horizontally */
+    /* position: absolute; */
+    /* bottom: -45px; Adjust as needed */
+    /* left: 50%; */
+    /* transform: translateX(-50%); Center the button */
+}
+
+/* Additional style for better appearance */
+.close-modal-button:hover {
+    background-color: #e1e1e1;
+}
+
+
+
+
     </style>
 </head>
 
 <body>
 
-    <div class="instructions-container">
+    <!-- <div class="instructions-container">
         <div class="instructions-text">
             <h1>Instructions</h1>
             <p>
@@ -546,10 +580,40 @@
                 When you feel highly confident that you have discovered it, and not before, you can submit your final answer.    
             </p>            
         </div>
-    </div>
+    </div> -->
 
     <div class="app-container">
+
+        <div class="instructions-modal">
+            <div class="instructions-text-container">
+
+                <h1>Instructions</h1>
+                <p>
+                    Your mission: discover my number series rule.
+                </p>
+                <p>
+                    Your aim is to discover my rule by writing down sets of three numbers, together with reasons for your choice of them.
+                </p>
+                <p>
+                    After you have written down each set, I shall tell you whether your numbers conform to the rule or not.
+                </p>
+                <p>
+                    There is no time limit but you should try to discover this rule by citing the minimum sets of numbers.
+                </p>
+                <p>
+                    Remember that your aim is not simply to find numbers which conform to the rule, but to discover the rule itself.
+                </p>
+                <p>
+                    When you feel highly confident that you have discovered it, and not before, you can submit your final answer.    
+                </p>
+                <button class="close-modal-button" onclick="closeInstructionsModal()">Close</button>
+
+            </div>
+        </div>
+
         <div class="input-pane" id="admin-panel">
+
+
             <h1>Dev setup panel</h1>
             <p>
                 Manualy select the rule in the UI for testing / demo
@@ -561,6 +625,7 @@
             </select>
         </div>
         <div class="input-pane">
+            <button id="help-btn" onclick="openInstructionsModal()">Help</button>
             <!-- <h1>Activity 1.1 Confirmation Bias</h1> -->
 
             <form id="dataForm">
@@ -612,16 +677,6 @@
 
                 <input type="submit" value="Submit Final Guess" name="finalGuessBtn" id="finalGuessBtn" />
 
-                <!-- <button
-                        id="finalGuessBtn"
-                        type="submit"
-                        onclick="submitFinalGuess()"
-
-                    >
-                        Submit Final Guess
-                    </button> -->
-
-                <!-- <button id="showRuleBtn" type="button">Show Rule</button> -->
             </form>
         </div>
 
@@ -723,24 +778,38 @@
     </div>
 
 
-                    <!-- Modal -->
-                    <!-- 
-        <div id="ruleModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Your Guess: <span id="ruleGuessLabel"></span></h2>
-                <br />
-                <h2>Confidence: <span id="confidence-label-modal"></span></h2>
-                <br />
-                <h2>Correct Rule: <span id="correctRule"></span></h2>
-
-                <p id="modalText"> Some additional text here</p>
-                <button id="closeModal">Okay</button>
-            </div>
-        </div>
-        -->
-
                     <script>
+
+                        // Instructions modal controls
+                        function openInstructionsModal() {
+                            var modal = document.querySelector(".instructions-modal");
+                            modal.style.display = "flex";
+                        }
+                        function closeInstructionsModal() {
+                            var modal = document.querySelector(".instructions-modal");
+                            modal.style.display = "none";
+                        }
+
+
+                        // Initial number series to display
+                        let initialSeries = [2, 4, 6];
+
+                        // Populate rule dropdown
+                        var ruleDropdown = document.getElementById("correctRule");
+                        for (var key in ruleDict) {
+                            var option = document.createElement("option");
+                            option.text = key;
+                            ruleDropdown.add(option);
+                        }
+
+                        // App States
+                        let entryCount = 0;
+
+                        // Data structue to contain submitted guesses
+                        // Contains objects with the following properties: entryNumber, sequence, rule, matchesRule, confidence
+                        let userEntries = [];
+
+
                         // Update confidence percentage on slider change
                         function updateSliderLabel() {
                             var slider = document.getElementById("myRange");
@@ -819,20 +888,6 @@
                                 areAllNumbersPrime,
                         };
 
-                        // Populate rule dropdown
-                        var ruleDropdown = document.getElementById("correctRule");
-                        for (var key in ruleDict) {
-                            var option = document.createElement("option");
-                            option.text = key;
-                            ruleDropdown.add(option);
-                        }
-
-                        // App States
-                        let entryCount = 0;
-
-                        // Data structue to contain submitted guesses
-                        // Contains objects with the following properties: entryNumber, sequence, rule, matchesRule, confidence
-                        let userEntries = [];
 
                         // Handle series entry
                         // Move to next field when 4 digits are entered, back to previous field if backspace is pressed and field is empty
@@ -873,10 +928,10 @@
                             });
 
 
-                            // Set number1 number2 and number 3 to contain values 2, 4, 6 respectively
-                            document.getElementById("number1").value = 2;
-                            document.getElementById("number2").value = 4;
-                            document.getElementById("number3").value = 6;
+                            // Set number1 number2 and number 3 to contain valus of initial series
+                            // document.getElementById("number1").value = initialSeries[0];
+                            // document.getElementById("number2").value = initialSeries[1];
+                            // document.getElementById("number3").value = initialSeries[2];
 
 
                         // Handler to series entry form div - onClick send docus to first input
@@ -1029,7 +1084,33 @@
                                         "finalGuessBtn"
                                     ).style.display = "block";
                                 }
-                            });
+                            }
+                        );
+
+
+
+                        function addInitialEntryToChart(){
+                            // Add the first entry to the table
+                            let table = document.getElementById("dataTable");
+                            let newRow = table.insertRow();
+                            let cell1 = newRow.insertCell(0);
+                            let cell2 = newRow.insertCell(1);
+                            let cell3 = newRow.insertCell(2);
+                            let cell4 = newRow.insertCell(3);
+                            let cell5 = newRow.insertCell(4);
+                            
+                            entryCount++;
+
+                            // Display entry in table
+                            cell1.innerHTML = entryCount;
+                            cell2.innerHTML = initialSeries[0] + ", " + initialSeries[1] + ", " + initialSeries[2];
+                            cell3.innerHTML = "First Guess";
+                            cell4.innerHTML = "true";
+                            cell5.innerHTML = "";
+
+
+                        }
+                        addInitialEntryToChart();
 
 
                         function submitGuess() {
